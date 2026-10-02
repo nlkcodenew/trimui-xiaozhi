@@ -231,13 +231,9 @@ def test_intro_disabled_setting():
     assert sdl2.state["created"] == []
 
 
-def test_intro_layout_uses_logical_space_not_screen_size():
-    """Regression: intro ve trong logical 1280x720 (SDL_RenderSetLogicalSize).
-    Tinh toa do bang kich thuoc man hinh that (1024x768 tren Brick) lam chu
-    lech khoi tam va nho hon - dung la ly do logo "be va lech"."""
-    screen = with_giant(make_screen())
-    recorded = []
-    bright = {("N", "bright"): object(), ("L", "bright"): object(), ("K", "bright"): object()}
+def _glyphs_for(screen):
+    bright = {("N", "bright"): object(), ("L", "bright"): object(),
+              ("K", "bright"): object()}
     glyphs = {}
     # Be rong chu that cua DejaVu o co chu 132 (do bang PIL), scale theo giant.
     ratios = {"N": 99.0, "L": 74.0, "K": 90.0}
@@ -245,7 +241,55 @@ def test_intro_layout_uses_logical_space_not_screen_size():
         width = int(ratios[letter] * screen._intro_scale())
         for name in ("dark", "bright", "white"):
             glyphs[(letter, name)] = (bright[(letter, "bright")] if name == "bright"
-                                      else object(), width, 160)
+                                      else object(), width, 96)
+    return glyphs, bright
+
+
+def test_intro_is_centered_on_every_screen_size():
+    """Regression: phai canh theo PIXEL THAT cua may. Dung hang so 1280x720
+    lam logo lech sang phai tren Brick Pro 1024x768 (chi chay dung tren Smart
+    Pro S 1280x720)."""
+    for width, height in ((1024, 768), (1280, 720), (800, 480), (1024, 600)):
+        screen = with_giant(make_screen())
+        screen.width, screen.height = width, height
+        glyphs, bright = _glyphs_for(screen)
+        recorded = []
+        screen._intro_blit = lambda tex, x, y, w, h: recorded.append((tex, x, y, w, h))
+        screen._render_intro_glyphs(1.0, glyphs)
+        letters = [item for item in recorded if item[0] in bright.values()]
+        assert len(letters) == 3, "%dx%d: phai ve duoc 3 chu" % (width, height)
+        left = min(x for _t, x, _y, _w, _h in letters)
+        right = max(x + w for _t, x, _y, w, _h in letters)
+        center_x = (left + right) / 2.0
+        assert abs(center_x - width / 2.0) < 2.0, \
+            "%dx%d: logo lech, tam = %.1f thay vi %.1f" % (
+                width, height, center_x, width / 2.0)
+        assert left >= 0 and right <= width, \
+            "%dx%d: logo tran man hinh (%d..%d)" % (width, height, left, right)
+        tops = [y for _t, _x, y, _w, _h in letters]
+        center_y = (min(tops) + max(y + h for _t, _x, y, _w, h in letters)) / 2.0
+        assert abs(center_y - height / 2.0) < 4.0, \
+            "%dx%d: logo lech theo chieu docao" % (width, height)
+
+
+def test_intro_fits_on_narrow_screen():
+    """Man hinh hep phai co xuong cho vua, khong tran."""
+    screen = with_giant(make_screen())
+    screen.width, screen.height = 640, 480
+    glyphs, bright = _glyphs_for(screen)
+    recorded = []
+    screen._intro_blit = lambda tex, x, y, w, h: recorded.append((tex, x, y, w, h))
+    screen._render_intro_glyphs(1.0, glyphs)
+    letters = [item for item in recorded if item[0] in bright.values()]
+    right = max(x + w for _t, x, _y, w, _h in letters)
+    assert right <= screen.width, "logo tran man hinh hep: %d > %d" % (right, screen.width)
+
+
+def test_intro_layout_uses_screen_pixels():
+    screen = with_giant(make_screen())
+    screen.width, screen.height = 1024, 768
+    recorded = []
+    glyphs, bright = _glyphs_for(screen)
     screen._intro_blit = lambda texture, x, y, w, h: recorded.append((texture, x, y, w, h))
     # progress = 1.0: chu da bay len va dung choi, khong con sweep.
     screen._render_intro_glyphs(1.0, glyphs)
@@ -255,8 +299,8 @@ def test_intro_layout_uses_logical_space_not_screen_size():
     left = min(x for _t, x, _y, _w, _h in letters)
     right = max(x + w for _t, x, _y, w, _h in letters)
     center_x = (left + right) / 2.0
-    assert abs(center_x - app.LOGICAL_W / 2.0) < 2.0, \
-        "logo must be centered in logical space, got center %.1f" % center_x
+    assert abs(center_x - screen.width / 2.0) < 2.0, \
+        "logo must be centered on the real screen, got center %.1f" % center_x
     # Ty le chu phai Y HET Music-Player tren man hinh chuan: giant 132 ->
     # k = 1.0, khong phong to, khong thu nho.
     assert abs(screen._intro_scale() - 1.0) < 1e-9, \
@@ -266,6 +310,7 @@ def test_intro_layout_uses_logical_space_not_screen_size():
     # Man hinh nho: chi co xuong, khong tran (fit <= 1).
     tiny = app.Screen.__new__(app.Screen)
     tiny.intro_font_size = 132
+    tiny.width, tiny.height = 1024, 768
     assert tiny._intro_fit([99, 74, 90], 2000) <= 1.0
 
 
@@ -302,7 +347,9 @@ if __name__ == "__main__":
     test_intro_fallback_passes_int_coordinates()
     test_intro_scale_follows_actual_font_size()
     test_intro_disabled_setting()
-    test_intro_layout_uses_logical_space_not_screen_size()
+    test_intro_is_centered_on_every_screen_size()
+    test_intro_fits_on_narrow_screen()
+    test_intro_layout_uses_screen_pixels()
     test_intro_giant_matches_music_player_formula()
     test_intro_spread_matches_music_player()
     test_intro_setting_registered()

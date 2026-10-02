@@ -41,10 +41,11 @@ INTRO_DARK = (60, 5, 8)
 INTRO_WHITE = (255, 255, 255)
 INTRO_DURATION = 2.2
 
-# Intro ve trong LOGICAL space (khop SDL_RenderSetLogicalSize), khong phai kich
-# thuoc man hinh that. Neu ve bang kich thuoc that (1024x768 tren Brick) thi
-# chu lech khoi tam va nho hon tren man hinh.
-LOGICAL_W, LOGICAL_H = 1280, 720
+# Intro ve bang PIXEL THAT cua man hinh (self.width/self.height), khong dung
+# hang so 1280x720: tren Brick Pro 1024x768 hang so do lam chu lech sang phai
+# (vi 1280 > 1024). Terminal (native) cung canh theo man hinh that nen chay
+# duoc tren ca 4:3 va 16:9 - app nay lam y het.
+LOGICAL_W, LOGICAL_H = 1280, 720  # giu de code doc lai duoc; KHONG dung de canh
 # Dung nguyen khuon Music-Player: giant = 132 * max(0.75, min(w/1024, h/768)),
 # fit = min(1, (w-80)/total). Tren man hinh chuan 1024x768 -> scale = 1.0 ->
 # giant 132 va k = 1.0, tuc hinh anh y het Music-Player.
@@ -367,7 +368,7 @@ class Screen:
         """
         if total <= 0:
             return 1.0
-        return max(0.05, min(1.0, (LOGICAL_W - 80) / float(total)))
+        return max(0.05, min(1.0, (self.width - 80) / float(total)))
 
     def _intro_spread(self, progress):
         ease = min(1.0, max(0.0, progress / 0.55))
@@ -384,20 +385,20 @@ class Screen:
             # Moi toa do phai la int - SDL_Rect (pysdl2) khong nhan float.
             k = self._intro_scale()
             step = int(90 * k)
-            cursor = LOGICAL_W // 2 - step
+            cursor = self.width // 2 - step
             for index, letter in enumerate("NLK"):
                 enter_at = 0.05 + index * 0.16
                 local = (progress - enter_at) / 0.30
                 if local > 0.0:
                     local = min(1.0, local)
                     rise = int((1.0 - local) * 90 * k)
-                    self.text(letter, int(cursor), int(LOGICAL_H // 2 - 30) + rise,
+                    self.text(letter, int(cursor), int(self.height // 2 - 30) + rise,
                               52, INTRO_RED)
                 cursor += step
         sdl2.SDL_RenderPresent(self.renderer)
 
     def _render_intro_glyphs(self, progress, glyphs):
-        center_y = LOGICAL_H // 2
+        center_y = self.height // 2
         k = self._intro_scale()
         spacing = self._intro_spread(progress)
         try:
@@ -407,7 +408,7 @@ class Screen:
             widths = [int(99 * k), int(74 * k), int(90 * k)]
         total = sum(widths) + spacing * 2
         fit = self._intro_fit(widths, total)
-        cursor = (LOGICAL_W - total * fit) // 2
+        cursor = (self.width - total * fit) // 2
         for index, letter in enumerate("NLK"):
             width = widths[index]
             try:
@@ -447,7 +448,7 @@ class Screen:
             cursor += (width + spacing) * fit
         if progress > 0.72:
             sweep = (progress - 0.72) / 0.28
-            cursor = (LOGICAL_W - total * fit) // 2
+            cursor = (self.width - total * fit) // 2
             for index, letter in enumerate("NLK"):
                 width = widths[index]
                 try:

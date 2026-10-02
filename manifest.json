@@ -1,12 +1,12 @@
 {
-  "version": "0.2.0",
+  "version": "0.2.1",
   "app": "trimui-xiaozhi",
-  "built": "2026-10-02T16:11:09+07:00",
+  "built": "2026-10-02T19:11:10+07:00",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "sha256": "0655c55a235e67546296c8a749028cd030cd348b22566ab33ac4e99d15924b05",
-      "size": 6021
+      "sha256": "0a477464056c67d66e66851dbf980b34f233c9ae8637e844eabe3b4620339e84",
+      "size": 6710
     },
     {
       "path": "README.md",
@@ -15,13 +15,13 @@
     },
     {
       "path": "VERSION",
-      "sha256": "911fc0c48cb0c70601db5775a9bef1b740dc4cc9f9b46389b9f0563fe7eb94d7",
+      "sha256": "196666d6a7eb4583fb9cb1e159971010b2e29b5b752aa73f456e0e2061b6425f",
       "size": 5
     },
     {
       "path": "app.py",
-      "sha256": "bfefc857867d433ac0a4d5e263146c2d6b1c370bf977cf3069d2229d8b283ff1",
-      "size": 44263
+      "sha256": "908b264163632ea4e26fb6dc0e939a6c02186a26c540a623bc66c6076cf23d74",
+      "size": 44395
     },
     {
       "path": "assets/font.ttf",
@@ -505,9 +505,9 @@
     }
   ],
   "release_asset": {
-    "name": "trimui-xiaozhi-v0.2.0.zip",
-    "sha256": "dc427de99fcf478d9d23cda1e34bb4733a834e51806ede4f1b5294586923e6dd",
-    "size": 2698992
+    "name": "trimui-xiaozhi-v0.2.1.zip",
+    "sha256": "937b476249d34263770368c0634499448187390934eef60f381da130cf270705",
+    "size": 2699316
   },
-  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.2.0 - 2026-10-02\n\n- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.\n\n### Sửa lỗi bố cục\n\n- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).\n- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.\n\n### Giao diện mới\n\n- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.\n- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.\n- **Footer**: gợi ý phím dạng pill, đổi theo trang.\n- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.\n- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.\n- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.\n- **Thông báo OTA** trượt từ trên xuống.\n\n### Hiệu năng\n\n- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.\n- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.\n\n### Kiểm thử\n\n- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi mục cài đặt thuộc nhóm và vẽ được, hộp thoại/toast/2 trang kích hoạt vẽ được.\n- `tools/preview_ui.py` — render giao diện ra PNG bằng PIL để xem trước khi nạp lên máy (`python3 tools/preview_ui.py`).\n\n## v0.1.4 - 2026-10-02\n\n- **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.\n- `_intro_glyph` giờ bỏ ngoại lệ ra log thay vì im lặng, kèm cảnh báo khi không render được glyph.\n- Test mới: `SDL_Color` trong stub test **bắt buộc đúng 4 tham số** (stub cũ nhận vô hạn nên không bắt được lỗi này) + test kiểm màu intro đủ 4 kênh.\n\n## v0.1.3 - 2026-10-02\n\n- **Sửa crash khi mở app** (bản 0.1.2): nhánh vẽ chữ dự phòng truyền số thực vào `SDL_Rect`; `pysdl2` chỉ nhận `int`. Đã ép kiểu int mọi tọa độ.\n- Nhánh dự phòng còn xảy ra vì `TTF_OpenFont(font, 300)` bị SDL_ttf trên máy từ chối → app rơi về chữ nhỏ. Giờ thử dần các cỡ chữ (giant → nhỏ dần) và ghi cỡ dùng được vào `logs/app.log`.\n- Logo về **đúng thuật toán Music-Player**: `giant = 132 × max(0.75, min(w/1024, h/768))`, `fit = min(1, (w-80)/total)`, hằng số gốc (rise 90, overshoot −14, quầng +4/+6, giãn chữ 4→30, quét tráng 0.72→1.00), 2.2 giây, bấm phím bỏ qua. Trên máy "
+  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.2.1 - 2026-10-02\n\n- **Sửa logo khởi động lệch sang phải trên Brick Pro (4:3).** Intro vẫn canh theo hằng số 1280×720 nên trên màn hình 1024×768 logo bị đẩy sang phải; Smart Pro S (1280×720) thì vô tình đúng nên dễ tưởng chỉ lỗi ở một máy. Nay intro canh theo **pixel thật** (`self.width/self.height`) — đúng cách app Terminal (native) đang làm.\n- Không cần tách bản riêng cho từng máy: một bản duy nhất tự căh đúng trên cả 1024×768 và 1280×720.\n- Test mới: kiểm tra logo chính giữa cả ngang lẫn dọc, và không tràn màn hình, trên 1024×768 / 1280×720 / 1024×600 / 800×480.\n\n## v0.2.0 - 2026-10-02\n\n- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.\n\n### Sửa lỗi bố cục\n\n- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).\n- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.\n\n### Giao diện mới\n\n- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.\n- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.\n- **Footer**: gợi ý phím dạng pill, đổi theo trang.\n- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.\n- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.\n- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.\n- **Thông báo OTA** trượt từ trên xuống.\n\n### Hiệu năng\n\n- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.\n- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.\n\n### Kiểm thử\n\n- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi mục cài đặt thuộc nhóm và vẽ được, hộp thoại/toast/2 trang kích hoạt vẽ được.\n- `tools/preview_ui.py` — render giao diện ra PNG bằng PIL để xem trước khi nạp lên máy (`python3 tools/preview_ui.py`).\n\n## v0.1.4 - 2026-10-02\n\n- **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.\n- `_intro_glyph` giờ bỏ ngoại lệ ra log thay vì im lặng, kèm cảnh báo khi không render được glyph.\n- Test mới: `SDL_Color` trong stub test **bắt buộc đúng 4 tham số** (stub cũ nhận vô hạn nên không bắt được lỗi này) + test kiểm màu intro đủ 4 kênh.\n\n## v0.1.3 - 2026-10-02\n\n"
 }

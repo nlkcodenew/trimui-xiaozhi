@@ -1,5 +1,11 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.2.1 - 2026-10-02
+
+- **Sửa logo khởi động lệch sang phải trên Brick Pro (4:3).** Intro vẫn canh theo hằng số 1280×720 nên trên màn hình 1024×768 logo bị đẩy sang phải; Smart Pro S (1280×720) thì vô tình đúng nên dễ tưởng chỉ lỗi ở một máy. Nay intro canh theo **pixel thật** (`self.width/self.height`) — đúng cách app Terminal (native) đang làm.
+- Không cần tách bản riêng cho từng máy: một bản duy nhất tự căh đúng trên cả 1024×768 và 1280×720.
+- Test mới: kiểm tra logo chính giữa cả ngang lẫn dọc, và không tràn màn hình, trên 1024×768 / 1280×720 / 1024×600 / 800×480.
+
 ## v0.2.0 - 2026-10-02
 
 - **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.
