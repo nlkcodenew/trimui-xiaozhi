@@ -227,10 +227,17 @@ class Screen:
         font = getattr(self, "intro_font", None)
         if not font:
             return (None, 0, 0)
+        # color phai la (r, g, b) - alpha them o day. SDL_Color co dung 4 truong,
+        # truyen 5 gia tri se nem TypeError va intro im lang ruc chu.
+        if len(color) == 4:
+            rgba = color
+        else:
+            rgba = tuple(color) + (255,)
         try:
             surface = ttf.TTF_RenderUTF8_Blended(font, letter.encode("utf-8"),
-                                                 sdl2.SDL_Color(*color, 255))
+                                                 sdl2.SDL_Color(*rgba))
         except Exception:
+            logging.exception("intro glyph %s failed", letter)
             return (None, 0, 0)
         if not surface:
             return (None, 0, 0)
@@ -247,10 +254,16 @@ class Screen:
             return (None, 0, 0)
         return (texture, width, height)
 
+    @staticmethod
+    def _intro_colors():
+        """Mau glyph intro, dung y Music-Player: samm / tuoi Netflix / trang."""
+        return {"dark": INTRO_DARK + (255,),
+                "bright": INTRO_RED + (255,),
+                "white": INTRO_WHITE + (255,)}
+
     def _build_intro_glyphs(self):
         cache = {}
-        colors = {"dark": INTRO_DARK + (255,), "bright": INTRO_RED + (255,),
-                  "white": INTRO_WHITE + (255,)}
+        colors = self._intro_colors()
         for letter in "NLK":
             for name, color in colors.items():
                 try:
@@ -259,8 +272,11 @@ class Screen:
                     texture, width, height = (None, 0, 0)
                 if texture:
                     cache[(letter, name)] = (texture, width, height)
-        logging.info("intro glyphs cached=%d font_size=%s",
-                     len(cache), getattr(self, "intro_font_size", 0))
+        logging.info("intro glyphs cached=%d/%d font_size=%s",
+                     len(cache), 9, getattr(self, "intro_font_size", 0))
+        if not cache:
+            logging.error("intro: khong render duoc glyph NLK - logo se ve bang "
+                          "du phong (chu nho)")
         return cache
 
     def _free_intro_glyphs(self, glyphs):

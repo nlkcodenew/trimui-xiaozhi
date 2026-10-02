@@ -33,7 +33,14 @@ def make_sdl2():
             self.x, self.y, self.w, self.h = x, y, w, h
 
     class Color:
+        """SDL_Color co DUNG 4 truong. Giu nghiem ngat de bat loi truyen
+        5 gia tri (do roi them alpha o ca du phong va intro)."""
+        _fields = ("r", "g", "b", "a")
+
         def __init__(self, *args):
+            if len(args) != 4:
+                raise TypeError("SDL_Color() takes exactly 4 arguments (%d given)"
+                                % len(args))
             self.args = args
 
     mod.SDL_Rect = Rect
@@ -151,6 +158,17 @@ def test_intro_skip_on_key_frees_textures():
     assert time.monotonic() - started < 5.0, "any key must skip instantly"
     assert sorted(map(id, sdl2.state["destroyed"])) == sorted(map(id, sdl2.state["created"]))
     assert len(sdl2.state["created"]) == 9
+
+
+def test_intro_glyph_colors_have_exactly_four_channels():
+    """Regression: SDL_Color co 4 truong. Truoc day mau trong ban goc da co
+    san alpha roi intro lai them mot 255 nua -> TypeError duoc nuot im lang,
+    0 glyph duoc ve nen logo luon roi ve nhanh du phong (chu nho)."""
+    colors = app.Screen._intro_colors()
+    for name, value in colors.items():
+        assert len(value) == 4, "%s must be RGBA, got %r" % (name, value)
+    screen = with_giant(make_screen())
+    assert screen._intro_glyph("N", app.Screen._intro_colors()["bright"])[0] is not None
 
 
 def test_intro_fallback_without_giant_font():

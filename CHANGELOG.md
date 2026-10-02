@@ -1,5 +1,11 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.1.4 - 2026-10-02
+
+- **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.
+- `_intro_glyph` giờ bỏ ngoại lệ ra log thay vì im lặng, kèm cảnh báo khi không render được glyph.
+- Test mới: `SDL_Color` trong stub test **bắt buộc đúng 4 tham số** (stub cũ nhận vô hạn nên không bắt được lỗi này) + test kiểm màu intro đủ 4 kênh.
+
 ## v0.1.3 - 2026-10-02
 
 - **Sửa crash khi mở app** (bản 0.1.2): nhánh vẽ chữ dự phòng truyền số thực vào `SDL_Rect`; `pysdl2` chỉ nhận `int`. Đã ép kiểu int mọi tọa độ.
