@@ -57,7 +57,20 @@ if [ -z "$PYTHON" ]; then
     exit 1
 fi
 echo "python=$PYTHON" >> "$BOOT_LOG"
-chmod +x "$APP/bin/xiaozhi-core" "$APP/system_status.sh" 2>> "$BOOT_LOG" || true
+chmod +x "$APP/bin/xiaozhi-core" "$APP/system_status.sh" "$APP/ota-update.sh" 2>> "$BOOT_LOG" || true
+
+# OTA nen: app mo ngay lap tuc, ota-update.sh tu kiem/tai/ap nen. That bai hoac
+# offline -> bo qua êm, khong chan boot. Tat bang XIAOZHI_NO_OTA=1.
+rm -f "$APP/.ota-status" "$APP/.ota-status.tmp" 2>/dev/null
+if [ -x "$APP/ota-update.sh" ] && [ "$XIAOZHI_NO_OTA" != "1" ]; then
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 90 sh "$APP/ota-update.sh" --apply >> "$APP/logs/ota-run.log" 2>&1 &
+  else
+    sh "$APP/ota-update.sh" --apply >> "$APP/logs/ota-run.log" 2>&1 &
+  fi
+  echo "ota started in background" >> "$BOOT_LOG"
+fi
+
 echo "starting app.py" >> "$BOOT_LOG"
 "$PYTHON" -u "$APP/app.py" >> "$SESSION_LOG" 2>&1
 STATUS=$?

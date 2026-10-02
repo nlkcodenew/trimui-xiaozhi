@@ -79,6 +79,9 @@ class Screen:
         ]
         self.confirm_unlink = False
         self.activation_page = (APP / "data/identity-unlinked").exists()
+        self.ota_badge = ""
+        self.ota_notice = ""
+        self.ota_checked_at = 0.0
 
     def init(self):
         if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_GAMECONTROLLER | sdl2.SDL_INIT_JOYSTICK) != 0:
@@ -338,6 +341,13 @@ class Screen:
         self.rect(0, 0, 1280, 720, BG)
         self.text("Trimui-XiaoZhi v%s" % APP_VERSION, 42, 28, 38, ACCENT)
         self.text(self.service.status, 830, 40, 24, MUTED, 420)
+        # OTA: doc .ota-status 1 lan/giay (khong doc file o moi khung ve).
+        now = time.monotonic()
+        if now - self.ota_checked_at >= 1.0:
+            self.ota_checked_at = now
+            self.poll_ota()
+        if self.ota_badge:
+            self.text(self.ota_badge, 830, 74, 20, MUTED, 420)
         self.rect(34, 92, 1212, 565, PANEL)
         if self.page == "chat":
             if self.service.activation_code and not self.service.activated:
@@ -380,6 +390,10 @@ class Screen:
                 self.text("TẠO DANH TÍNH THIẾT BỊ MỚI?", 132, 248, 30, ACCENT)
                 self.text("Gỡ thiết bị cũ trên xiaozhi.me/console trước.", 132, 306, 24)
                 self.text("A: Xác nhận    B: Hủy", 132, 396, 24)
+        if self.ota_notice:
+            # Ve sau cung de thong bao OTA khong bi noi dung chat cat chu.
+            self.rect(34, 612, 1212, 58, PANEL)
+            self.text(self.ota_notice, 64, 628, 24, ACCENT, 1150)
         sdl2.SDL_RenderPresent(self.renderer)
 
     def action(self, action):
@@ -453,6 +467,42 @@ class Screen:
             elif event.type == sdl2.SDL_JOYHATMOTION and not self.controllers:
                 hats = {1: "up", 4: "down", 8: "left", 2: "right"}
                 self.action(hats.get(event.jhat.value, ""))
+
+    def poll_ota(self):
+        """Doc .ota-status (ota-update.sh chay nen tu launch.sh).
+
+        Tra ve ("badge", text) hoac ("done", version). Badge "Dang kiem tra..."
+        phai bien mat khi file bi xoa - launch.sh xoa .ota-status truoc khi chay
+        OTA nen lan app mo dau tien thuong khong co gi de hien.
+        """
+        path = APP / ".ota-status"
+        try:
+            raw = path.read_text(encoding="utf-8").strip()
+        except OSError:
+            self.ota_badge = ""
+            return
+        self.ota_badge = ""
+        if not raw:
+            return
+        if raw.startswith("done "):
+            version = raw[5:].strip()
+            try:
+                path.unlink()
+            except OSError:
+                pass
+            # Version dang chay < version vua cai -> that su can mo lai app.
+            if version and version != APP_VERSION:
+                self.ota_notice = "ĐÃ CẬP NHẬT LÊN v%s - MỞ LẠI APP ĐỂ DÙNG" % version
+        elif raw.startswith("downloading "):
+            self.ota_badge = "Đang tải %s..." % raw[12:].strip()
+        elif raw == "checking":
+            self.ota_badge = "Đang kiểm tra..."
+        else:
+            try:
+                path.unlink()
+            except OSError:
+                pass
+            self.ota_notice = ""
 
     def close(self):
         for controller in self.controllers:

@@ -1,27 +1,27 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "app": "trimui-xiaozhi",
-  "built": "2026-10-02T14:28:13+07:00",
+  "built": "2026-10-02T14:52:31+07:00",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "sha256": "4584b4e5b5b7ccd0b21a2ba8609516cf016df003434e7aedc6101335e11b6805",
-      "size": 487
+      "sha256": "800b579451b7edf291848ed1b05f3da37fd5e3a73310c15b94ccea2cd9db1e84",
+      "size": 1473
     },
     {
       "path": "README.md",
-      "sha256": "3849f87546a7375b07b5c8c8d8e0e85c8f97e50c1649802f8d9d17afabec0319",
-      "size": 4642
+      "sha256": "4af6a5dded669684d0e647698ad75127ef356728d6b2644f68009f536919ea6e",
+      "size": 5473
     },
     {
       "path": "VERSION",
-      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
-      "size": 6
+      "sha256": "11ee23b8fc2fc619d6eab6277adb5a527261067ac01ccfc3e11857f55bf18bcd",
+      "size": 5
     },
     {
       "path": "app.py",
-      "sha256": "3e3026dd7bc14f89bcc053a7d67381efbf34adbf61b5f705f6585354ace5b092",
-      "size": 21555
+      "sha256": "d1fe9229a41c69c96e90d3919221cb4340096081625b6999918f7071a97b7bb1",
+      "size": 23487
     },
     {
       "path": "assets/font.ttf",
@@ -39,6 +39,16 @@
       "size": 3126176
     },
     {
+      "path": "certs/README.txt",
+      "sha256": "15b1e79f092a44395d30f6f9cec2099c98777bc48a9ae31fbc2193928bcf484d",
+      "size": 443
+    },
+    {
+      "path": "certs/cacert.pem",
+      "sha256": "f66dff1bdf8f96060b8177976f8b7d9254bc89bc4db933d769f7384d28480bc9",
+      "size": 188900
+    },
+    {
       "path": "config.json",
       "sha256": "4b76a052506995234170543d9438a914ee8f71118ea602fc33dd1e885bc609f8",
       "size": 235
@@ -50,8 +60,13 @@
     },
     {
       "path": "launch.sh",
-      "sha256": "6be2a5f8edd8328d0348a4113b1ad3e1bf2a708afbd7a5087a1b7102aa225ebe",
-      "size": 2450
+      "sha256": "a95d3cd301db8ad4016aa62756b1ec552898d8ee772d10bcbaadcdbd3cc01a4c",
+      "size": 3013
+    },
+    {
+      "path": "ota-update.sh",
+      "sha256": "706eb5576792c445e084fa076545ca32ecd8e23a8bbb94f054abea6868789371",
+      "size": 10069
     },
     {
       "path": "remote.py",
@@ -450,9 +465,9 @@
     }
   ],
   "release_asset": {
-    "name": "trimui-xiaozhi-v0.1.0.zip",
-    "sha256": "12abd511707f21f1467508e08ec832e22391ca7881e410aad83f64ec9fd870ab",
-    "size": 2291639
+    "name": "trimui-xiaozhi-v0.1.1.zip",
+    "sha256": "1f9d85cb95220c892389a6133a0f80a2f9e5150466275b25f9575755d5b37e7b",
+    "size": 2406645
   },
-  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.1.0 - 2026-10-02\n\n- Phien ban dau tien: tro ly giong noi Xiaozhi cho TrimUI (Python + SDL2).\n- Doi ten hien thi tren may thanh **Trimui-XiaoZhi** (truoc day \"Trimui Xiaozhi\");\n  thu muc cai dat `Apps/Trimui-XiaoZhi`, launch.sh van chay duoc voi ten thu muc cu.\n- Logo khoi dong NLK kieu Netflix (2.2 giay, bam phim bat ky de bo qua,\n  tat duoc trong Cai dat -> Intro NLK).\n- Cai dat: giai nen ZIP vao goc the nho de co `Apps/TrimuiXiaozhi/launch.sh`."
+  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.1.1 - 2026-10-02\n\n- OTA tự động: `ota-update.sh` (shell thuần, không cần python3) chạy nền từ `launch.sh`, tự kiểm `manifest.json` trên GitHub, tải file lệch SHA-256, staging rồi apply. App mở ngay, không phải chờ.\n  - Bật/tắt: `XIAOZHI_NO_OTA=1` để tắt. Mặc định bật.\n  - App hiện badge \"Đang kiểm tra...\" / \"Đang tải vX...\" và bảng \"ĐÃ CẬP NHẬT LÊN vX - MỞ LẠI APP ĐỂ DÙNG\" khi xong (đọc `.ota-status` 1 lần/giây).\n  - **Không bao giờ ghi đè `data/`** (danh tính + kích hoạt thiết bị) và `logs/`; cả trong đường tải bằng python3 lẫn đường tải bằng shell thuần.\n  - Offline / lỗi mạng → bỏ qua êm, không chặn boot, log ở `logs/ota.log`.\n  - Bundle `certs/cacert.pem` để kiểm chứng TLS.\n- `tests/test_ota.py`: 10 test (contract script, bảo vệ `data/`, `.ota-status` atomic, OTA offline fail mềm) + E2E thật với repo đã publish.\n\n## v0.1.0 - 2026-10-02\n\n- Phien ban dau tien: tro ly giong noi Xiaozhi cho TrimUI (Python + SDL2).\n- Doi ten hien thi tren may thanh **Trimui-XiaoZhi** (truoc day \"Trimui Xiaozhi\");\n  thu muc cai dat `Apps/Trimui-XiaoZhi`, launch.sh van chay duoc voi ten thu muc cu.\n- Logo khoi dong NLK kieu Netflix (2.2 giay, bam phim bat ky de bo qua,\n  tat duoc trong Cai dat -> Intro NLK).\n- Cai dat: giai nen ZIP vao goc the nho de co `Apps/TrimuiXiaozhi/launch.sh`."
 }

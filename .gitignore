@@ -3,4 +3,7 @@ __pycache__/
 dist/
 data/
 logs/
+.ota-status
+.ota-status.tmp
+.update_staging*
 Trimui-Xiaozhi-boot.log

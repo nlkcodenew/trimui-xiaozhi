@@ -16,7 +16,25 @@ Lần đầu tiên, ứng dụng sao chép *cấu hình thiết bị* từ thư 
 
 Điều khiển: A bắt đầu/nghe lại; B dừng, B lần nữa thoát; SELECT mở cài đặt; UP/DOWN cuộn lịch sử; trong cài đặt A đổi giá trị, B quay lại. Có thể dùng bàn phím Enter/Escape/F1/mũi tên để kiểm thử. Truy cập web mặc định tắt, bật trong cài đặt rồi mở `http://<IP-máy>:8788/`; PIN được lưu trong `data/remote-pin` và hiện trong cài đặt.
 
-Micro là cách dùng chính: nhấn A để bắt đầu, nói tự nhiên, B để dừng. Mặc định `Micro = auto` lấy thiết bị ghi âm đầu tiên từ `arecord -l`; nếu không nhận tiếng, đổi Micro trong cài đặt và xem thiết bị đã chọn trong `logs/app.log`. Nhập chữ trên web chỉ là tùy chọn phụ, không cần bật web để trò chuyện bằng giọng nói.
+Micro là cách dùng chính: nhấn A để bắt đầu, nói tự nhiên, B để dừng.
+
+## Cập nhật tự động (OTA)
+
+Mỗi lần mở app, `launch.sh` chạy nền `ota-update.sh`: kiểm `manifest.json` trên
+GitHub, tải các file lệch SHA-256 và thay thế. App mở ngay không phải chờ, hiện
+badge "Đang kiểm tra..." / "Đang tải vX..." và bảng **ĐÃ CẬP NHẬT LÊN vX - MỞ LẠI
+APP ĐỂ DÙNG** khi xong.
+
+- Tắt OTA: đặt `XIAOZHI_NO_OTA=1` trước khi mở app (tắt hẳn ở `launch.sh`).
+- Offline hoặc lỗi mạng: bỏ qua êm, không chặn boot. Xem `logs/ota.log`.
+- `data/` (danh tính + kích hoạt) và `logs/` **không bao giờ bị ghi đè**; danh
+  tính và lịch sử chat giữ nguyên sau khi cập nhật.
+- Kiểm thử tay: `sh ota-update.sh --check` (chỉ báo có bản mới), `sh ota-update.sh`
+  để hỏi trước khi cài.
+
+## Micro
+
+Mặc định `Micro = auto` lấy thiết bị ghi âm đầu tiên từ `arecord -l`; nếu không nhận tiếng, đổi Micro trong cài đặt và xem thiết bị đã chọn trong `logs/app.log`. Nhập chữ trên web chỉ là tùy chọn phụ, không cần bật web để trò chuyện bằng giọng nói.
 
 Nếu nhấn A nhưng không có phản hồi, mở Cài đặt → **Thử micro (nói 4 giây)** → A, nói bình thường trong 4 giây. App tạm dừng lõi để độc quyền thiết bị ghi âm, rồi hiện mức tín hiệu từng kênh và lưu số đo trong `logs/app.log`. Nếu gần -90 dB là im lặng; hãy thử `Micro = default` hoặc thiết bị còn lại, hay tăng mic gain trên thiết bị. Bản thử không tự ý đổi các điều khiển ALSA của Smart Pro S.
 
