@@ -25,8 +25,9 @@ def make_sdl2():
     mod.SDL_JOYHATMOTION = 1540
     mod.SDL_Event = FakeEvent
     mod.state = {"present": 0, "blits": 0, "created": [], "destroyed": [],
-                 "clears": 0, "delays": 0}
+                 "clears": 0, "delays": 0, "fills": 0, "rects": []}
     mod.event_queue = []
+    mod.SDL_BLENDMODE_BLEND = 1
 
     class Rect:
         def __init__(self, x, y, w, h):
@@ -95,6 +96,16 @@ def make_sdl2():
     mod.SDL_Delay = delay
     mod.SDL_SetRenderDrawColor = lambda *a: 0
     mod.SDL_FreeSurface = lambda *a: None
+
+    def fill_rect(renderer, rect):
+        mod.state["fills"] += 1
+        mod.state["rects"].append((rect.x, rect.y, rect.w, rect.h))
+
+    mod.SDL_RenderFillRect = fill_rect
+    mod.SDL_RenderDrawRect = lambda renderer, rect: mod.state["rects"].append(
+        (rect.x, rect.y, rect.w, rect.h)) or 0
+    mod.SDL_SetRenderDrawBlendMode = lambda *a: 0
+    mod.SDL_SetTextureAlphaMod = lambda *a: 0
     return mod
 
 
@@ -125,7 +136,7 @@ def make_screen(intro=True):
 
 def reset():
     sdl2.state.update({"present": 0, "blits": 0, "created": [], "destroyed": [],
-                       "clears": 0, "delays": 0})
+                       "clears": 0, "delays": 0, "fills": 0, "rects": []})
     sdl2.event_queue.clear()
 
 

@@ -1,5 +1,34 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.2.0 - 2026-10-02
+
+- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.
+
+### Sửa lỗi bố cục
+
+- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).
+- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.
+
+### Giao diện mới
+
+- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.
+- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.
+- **Footer**: gợi ý phím dạng pill, đổi theo trang.
+- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.
+- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.
+- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.
+- **Thông báo OTA** trượt từ trên xuống.
+
+### Hiệu năng
+
+- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.
+- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.
+
+### Kiểm thử
+
+- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi mục cài đặt thuộc nhóm và vẽ được, hộp thoại/toast/2 trang kích hoạt vẽ được.
+- `tools/preview_ui.py` — render giao diện ra PNG bằng PIL để xem trước khi nạp lên máy (`python3 tools/preview_ui.py`).
+
 ## v0.1.4 - 2026-10-02
 
 - **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.

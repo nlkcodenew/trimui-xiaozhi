@@ -24,7 +24,7 @@ def main():
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip().strip("vV")
     check(bool(version), "VERSION co gia tri (%s)" % version)
 
-    for rel in ("app.py", "service.py", "remote.py", "launch.sh", "config.json",
+    for rel in ("app.py", "ui.py", "service.py", "remote.py", "launch.sh", "config.json",
                 "icon.png", "background.png", "system_status.sh", "ota-update.sh",
                 "bin/xiaozhi-core", "assets/font.ttf", "certs/cacert.pem"):
         check((ROOT / rel).is_file(), "%s ton tai" % rel)
@@ -57,9 +57,17 @@ def main():
 
     app = (ROOT / "app.py").read_text(encoding="utf-8", errors="replace")
     check("def poll_ota(self):" in app, "app.py doc .ota-status")
-    check("Trimui-XiaoZhi v%s" in app, "app.py hien ten + version dung cach")
+    check('"Trimui-XiaoZhi"' in app, "app.py hien dung ten app")
+    check('APP_VERSION' in app, "app.py doc version tu file VERSION")
+    code_lines = [line for line in app.splitlines()
+                  if "SDL_RenderSetLogicalSize" in line and not line.lstrip().startswith("#")]
+    check(not code_lines, "khong dung logical size (het letterbox tren 1024x768)")
+    ui_source = (ROOT / "ui.py").read_text(encoding="utf-8", errors="replace")
+    check('"dark"' in ui_source and '"light"' in ui_source,
+          "ui.py co ca bang mau dark va light")
+    check("THEMES" in ui_source, "ui.py dinh nghia THEMES")
 
-    for test in ("tests/test_intro.py", "tests/test_ota.py"):
+    for test in ("tests/test_intro.py", "tests/test_ota.py", "tests/test_ui.py"):
         proc = subprocess.run([sys.executable, test], cwd=str(ROOT),
                               capture_output=True, text=True)
         check(proc.returncode == 0, "%s pass" % test)

@@ -1,12 +1,12 @@
 {
-  "version": "0.1.4",
+  "version": "0.2.0",
   "app": "trimui-xiaozhi",
-  "built": "2026-10-02T15:40:06+07:00",
+  "built": "2026-10-02T16:11:09+07:00",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "sha256": "a9ee3644d5ddd0503e845cd521c9df0dd6f4a62fbf24ccf9344b39dd8ddcfb57",
-      "size": 3758
+      "sha256": "0655c55a235e67546296c8a749028cd030cd348b22566ab33ac4e99d15924b05",
+      "size": 6021
     },
     {
       "path": "README.md",
@@ -15,13 +15,13 @@
     },
     {
       "path": "VERSION",
-      "sha256": "4533065aed7c960261a231b4035cc9bcec8bff61ce6b338d43e9c50d153a4546",
+      "sha256": "911fc0c48cb0c70601db5775a9bef1b740dc4cc9f9b46389b9f0563fe7eb94d7",
       "size": 5
     },
     {
       "path": "app.py",
-      "sha256": "6a01d693260ac8e7d21cd83d2288ddfd3a6ad6a21ba8f858b6616b875762f650",
-      "size": 26888
+      "sha256": "bfefc857867d433ac0a4d5e263146c2d6b1c370bf977cf3069d2229d8b283ff1",
+      "size": 44263
     },
     {
       "path": "assets/font.ttf",
@@ -69,6 +69,41 @@
       "size": 10069
     },
     {
+      "path": "preview/activation-dark.png",
+      "sha256": "f19a9428c7c5af6b0bb1e9fb4e22370a877d2cf191760f9b7b772fcc3344acc7",
+      "size": 31183
+    },
+    {
+      "path": "preview/chat-dark.png",
+      "sha256": "78504545d290ae59b30e20d6dd092295829f1d7f217df30a722034f93eb2ddcd",
+      "size": 48878
+    },
+    {
+      "path": "preview/chat-empty-dark.png",
+      "sha256": "03ef0f5326e6976c21b27b4df2178b72baffeb6f3a3930b7ec365fdc5a713114",
+      "size": 26896
+    },
+    {
+      "path": "preview/chat-light.png",
+      "sha256": "8fddcea26a3202713741ebed038e31a8a7979cae8b871c94dda5b37824ca188f",
+      "size": 49319
+    },
+    {
+      "path": "preview/confirm-dark.png",
+      "sha256": "63be36bb26099e9703ea1a792c3887086a521dff48f31a683de9f2f29032368d",
+      "size": 52423
+    },
+    {
+      "path": "preview/settings-dark.png",
+      "sha256": "221541bc1af61bc7b02b32bb48875cc6a98c49f4c76841e529636866d3934976",
+      "size": 49373
+    },
+    {
+      "path": "preview/settings-light.png",
+      "sha256": "4fd77f5b4da4453bf1c342f34dfd8691b204b0f6e9efba1dd5060dfac99768c3",
+      "size": 50484
+    },
+    {
       "path": "remote.py",
       "sha256": "597362c9dd18ba5afec960ddb8b6c792c8a8566cf4b301400f10521cddf9b280",
       "size": 5242
@@ -82,6 +117,11 @@
       "path": "system_status.sh",
       "sha256": "8adb802613db540a0b953533cfa83d5c3a2603888d14282ca98894614f14ff1d",
       "size": 268
+    },
+    {
+      "path": "ui.py",
+      "sha256": "19dd5a5a5bc66dbc22a533e1e9a371db59f536b48f7f4b90b6b1e36e2036dc61",
+      "size": 15086
     },
     {
       "path": "vendor/sdl2/COPYING.txt",
@@ -465,9 +505,9 @@
     }
   ],
   "release_asset": {
-    "name": "trimui-xiaozhi-v0.1.4.zip",
-    "sha256": "d073b44de751ed0e096c87966e65728bc3536bd876d8edfcf6aabe067ce613a1",
-    "size": 2408912
+    "name": "trimui-xiaozhi-v0.2.0.zip",
+    "sha256": "dc427de99fcf478d9d23cda1e34bb4733a834e51806ede4f1b5294586923e6dd",
+    "size": 2698992
   },
-  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.1.4 - 2026-10-02\n\n- **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.\n- `_intro_glyph` giờ bỏ ngoại lệ ra log thay vì im lặng, kèm cảnh báo khi không render được glyph.\n- Test mới: `SDL_Color` trong stub test **bắt buộc đúng 4 tham số** (stub cũ nhận vô hạn nên không bắt được lỗi này) + test kiểm màu intro đủ 4 kênh.\n\n## v0.1.3 - 2026-10-02\n\n- **Sửa crash khi mở app** (bản 0.1.2): nhánh vẽ chữ dự phòng truyền số thực vào `SDL_Rect`; `pysdl2` chỉ nhận `int`. Đã ép kiểu int mọi tọa độ.\n- Nhánh dự phòng còn xảy ra vì `TTF_OpenFont(font, 300)` bị SDL_ttf trên máy từ chối → app rơi về chữ nhỏ. Giờ thử dần các cỡ chữ (giant → nhỏ dần) và ghi cỡ dùng được vào `logs/app.log`.\n- Logo về **đúng thuật toán Music-Player**: `giant = 132 × max(0.75, min(w/1024, h/768))`, `fit = min(1, (w-80)/total)`, hằng số gốc (rise 90, overshoot −14, quầng +4/+6, giãn chữ 4→30, quét tráng 0.72→1.00), 2.2 giây, bấm phím bỏ qua. Trên máy 1024×768 cho `k = 1.0` → hình y hệt Music-Player.\n- Test mới: tọa độ dự phòng phải là `int`; công thức `giant`; giá trị `spread`; `fit` không bao giờ phóng to.\n\n## v0.1.2 - 2026-10-02\n\n- Sửa logo NLK \"bé và lệch\": intro vẽ trong **logical space 1280x720** (đúng `SDL_RenderSetLogicalSize`) thay vì dùng kích thước màn hình thật (1024x768 trên Brick) — sai lệch này làm chữ lệch tâm và co lại.\n- Chữ to lên gấp ~2 lần: `giant = 30% chiều cao màn hình` (300px thay vì 156px), logo chiếm 57% bề ngang thay vì 24%.\n- Rise / overshoot / quầng đỏ / giãn chữ nhân thêm hệ số `giant/132` nên hiệu ứng giữ **đúng tỉ lệ hình ảnh** như Music-Player và chiaki-ng.\n- `tests/test_intro.py`: thêm 2 test chốt tâm logo theo logical space và tỉ lệ chữ (chặn tái phát lỗi lệch/bé).\n\n## v0.1.1 - 2026-10-02\n\n- OTA tự động: `ota-update.sh` (shell thuần, không cần python3) chạy nền từ `launch.sh`, tự kiểm `manifest.json` trên GitHub, tải file lệch SHA-256, staging rồi apply. App mở ngay, không phải chờ.\n  - Bật/tắt: `XIAOZHI_NO_OTA=1` để tắt. Mặc định bật.\n  - App hiện badge \"Đang kiểm tra...\" / \"Đang tải vX...\" và bảng \"ĐÃ CẬP NHẬT LÊN vX - MỞ LẠI APP ĐỂ DÙNG\" khi xong (đọc `.ota-status` 1 lần/giây).\n  - **Không bao giờ ghi đè `data/`** (danh tính + kích hoạt thiết bị) và `logs/`; cả trong đường tải bằng python3 lẫn đường tải bằng shell thuần.\n  - Offline / lỗi mạng → bỏ qua êm, không chặn boot, log ở `logs/ota.log`.\n  - Bundle `certs/cacert.pem` để kiểm chứng TLS.\n- `tests/test_ota.py`: 10 test (contract script, bảo vệ `data/`, `.ota-status` atomic, OTA offline fail mềm) + E2E thật với repo đã publish.\n\n## v0.1.0 - 2026-10-02\n\n- Phien ban dau tien: tro ly giong noi Xiaozhi cho TrimUI (Python + SDL2).\n- Doi ten hien thi tren may thanh **Trimui-XiaoZhi** (truoc day \"Trimui Xiaozhi\");\n  thu muc cai dat `Apps/Trimui-XiaoZhi`"
+  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.2.0 - 2026-10-02\n\n- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.\n\n### Sửa lỗi bố cục\n\n- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).\n- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.\n\n### Giao diện mới\n\n- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.\n- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.\n- **Footer**: gợi ý phím dạng pill, đổi theo trang.\n- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.\n- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.\n- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.\n- **Thông báo OTA** trượt từ trên xuống.\n\n### Hiệu năng\n\n- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.\n- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.\n\n### Kiểm thử\n\n- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi mục cài đặt thuộc nhóm và vẽ được, hộp thoại/toast/2 trang kích hoạt vẽ được.\n- `tools/preview_ui.py` — render giao diện ra PNG bằng PIL để xem trước khi nạp lên máy (`python3 tools/preview_ui.py`).\n\n## v0.1.4 - 2026-10-02\n\n- **Sửa lỗi gốc khiến logo luôn bị nhỏ** (v0.1.0 → 0.1.3): màu glyph đã có sẵn alpha nhưng code lại truyền thêm `255` vào `SDL_Color` → `TypeError` bị nuốt im lặng, **0/9 texture được tạo**, app rơi về nhánh dự phòng vẽ chữ nhỏ. Đã sửa và log rõ `intro glyphs cached=9/9`.\n- `_intro_glyph` giờ bỏ ngoại lệ ra log thay vì im lặng, kèm cảnh báo khi không render được glyph.\n- Test mới: `SDL_Color` trong stub test **bắt buộc đúng 4 tham số** (stub cũ nhận vô hạn nên không bắt được lỗi này) + test kiểm màu intro đủ 4 kênh.\n\n## v0.1.3 - 2026-10-02\n\n- **Sửa crash khi mở app** (bản 0.1.2): nhánh vẽ chữ dự phòng truyền số thực vào `SDL_Rect`; `pysdl2` chỉ nhận `int`. Đã ép kiểu int mọi tọa độ.\n- Nhánh dự phòng còn xảy ra vì `TTF_OpenFont(font, 300)` bị SDL_ttf trên máy từ chối → app rơi về chữ nhỏ. Giờ thử dần các cỡ chữ (giant → nhỏ dần) và ghi cỡ dùng được vào `logs/app.log`.\n- Logo về **đúng thuật toán Music-Player**: `giant = 132 × max(0.75, min(w/1024, h/768))`, `fit = min(1, (w-80)/total)`, hằng số gốc (rise 90, overshoot −14, quầng +4/+6, giãn chữ 4→30, quét tráng 0.72→1.00), 2.2 giây, bấm phím bỏ qua. Trên máy "
 }
