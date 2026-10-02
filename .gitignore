@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+dist/
+data/
+logs/
+Trimui-Xiaozhi-boot.log

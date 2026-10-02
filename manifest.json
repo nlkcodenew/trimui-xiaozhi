@@ -1,0 +1,458 @@
+{
+  "version": "0.1.0",
+  "app": "trimui-xiaozhi",
+  "built": "2026-10-02T14:28:13+07:00",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "4584b4e5b5b7ccd0b21a2ba8609516cf016df003434e7aedc6101335e11b6805",
+      "size": 487
+    },
+    {
+      "path": "README.md",
+      "sha256": "3849f87546a7375b07b5c8c8d8e0e85c8f97e50c1649802f8d9d17afabec0319",
+      "size": 4642
+    },
+    {
+      "path": "VERSION",
+      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
+      "size": 6
+    },
+    {
+      "path": "app.py",
+      "sha256": "3e3026dd7bc14f89bcc053a7d67381efbf34adbf61b5f705f6585354ace5b092",
+      "size": 21555
+    },
+    {
+      "path": "assets/font.ttf",
+      "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "size": 757076
+    },
+    {
+      "path": "background.png",
+      "sha256": "2dcf09d1a1335634976dbcf5556e01e376b8d96e01a78e2c687c7bd0aa19fcf3",
+      "size": 7342
+    },
+    {
+      "path": "bin/xiaozhi-core",
+      "sha256": "03a56c623820f3a4a2673f05b2b1c45ae27bedc1ea5aebb6d43cedb95896ed6f",
+      "size": 3126176
+    },
+    {
+      "path": "config.json",
+      "sha256": "4b76a052506995234170543d9438a914ee8f71118ea602fc33dd1e885bc609f8",
+      "size": 235
+    },
+    {
+      "path": "icon.png",
+      "sha256": "96d77d9532d12d03a2b651af7f389dab77c4fa30c7214211e4a3a34bad6d7ca5",
+      "size": 1971
+    },
+    {
+      "path": "launch.sh",
+      "sha256": "6be2a5f8edd8328d0348a4113b1ad3e1bf2a708afbd7a5087a1b7102aa225ebe",
+      "size": 2450
+    },
+    {
+      "path": "remote.py",
+      "sha256": "597362c9dd18ba5afec960ddb8b6c792c8a8566cf4b301400f10521cddf9b280",
+      "size": 5242
+    },
+    {
+      "path": "service.py",
+      "sha256": "73a02613826f95f2bb77fa01a951f627419fd74dfaebbbf1df7d27ab20a4782c",
+      "size": 18659
+    },
+    {
+      "path": "system_status.sh",
+      "sha256": "8adb802613db540a0b953533cfa83d5c3a2603888d14282ca98894614f14ff1d",
+      "size": 268
+    },
+    {
+      "path": "vendor/sdl2/COPYING.txt",
+      "sha256": "710f77d275b65c5156a0b51c55d594cebffedcd4d18965859f4c3598d6083fe7",
+      "size": 2205
+    },
+    {
+      "path": "vendor/sdl2/__init__.py",
+      "sha256": "250d6638034c4122054e35de46d5a6b9cf6336a9492819ff63ead0ce0a63c63c",
+      "size": 1145
+    },
+    {
+      "path": "vendor/sdl2/_internal.py",
+      "sha256": "c41e134acda6eeeee4c4c3a4636a35a7a7d15adfb9f156b7d481b7934319c284",
+      "size": 835
+    },
+    {
+      "path": "vendor/sdl2/_sdl_init.py",
+      "sha256": "44b447b242520fa0ff692717da424954fe332640d613a53446060f08ba133027",
+      "size": 1504
+    },
+    {
+      "path": "vendor/sdl2/audio.py",
+      "sha256": "c2d61578f0986d38e60babe3acb0f213e866b13c655a3b98b6c3ec86cc75f1fb",
+      "size": 10391
+    },
+    {
+      "path": "vendor/sdl2/blendmode.py",
+      "sha256": "e4378aa9190ed0466f762c0ca784fd988dd06f1a4ef024f95e723f7a56cabaf8",
+      "size": 2268
+    },
+    {
+      "path": "vendor/sdl2/clipboard.py",
+      "sha256": "f3093dab87d38ea66fcef7172e4c1cf1dda13272ed805df88a6e529a12df8be1",
+      "size": 1159
+    },
+    {
+      "path": "vendor/sdl2/cpuinfo.py",
+      "sha256": "500cbb398e3919ecde304ec58f7bbacf7f58fc08be6c255599f872f98d09e822",
+      "size": 2666
+    },
+    {
+      "path": "vendor/sdl2/dll.py",
+      "sha256": "ec41d93643e493bef885c33982edcb6f00afd91fe0fdc9cd93276de035f56070",
+      "size": 14839
+    },
+    {
+      "path": "vendor/sdl2/endian.py",
+      "sha256": "d67b67aa35ab325b86fc910fe62a5352c8773c27c80307f0527e784e846fa554",
+      "size": 1511
+    },
+    {
+      "path": "vendor/sdl2/error.py",
+      "sha256": "cb138be38ef0904fb94194c03d51055e2dab34b543f97d51e8b9ea0522054bdd",
+      "size": 1403
+    },
+    {
+      "path": "vendor/sdl2/events.py",
+      "sha256": "cc36fefa93bb7523653a9098cb59549800b11d2cf0791604f3ce495652ae4806",
+      "size": 16949
+    },
+    {
+      "path": "vendor/sdl2/ext/__init__.py",
+      "sha256": "3f632610501a3a5178f3ff5e3af109d9da8cf43a84f2fc00ba280757f282bbf1",
+      "size": 732
+    },
+    {
+      "path": "vendor/sdl2/ext/algorithms.py",
+      "sha256": "55b694378703e8fe9912816e70702340579eb4d83804c6c23436b6e091d97ddf",
+      "size": 6427
+    },
+    {
+      "path": "vendor/sdl2/ext/array.py",
+      "sha256": "6be9b1c6a0363663413078d7ec612c9166714e28a467af44b3832d49d45c9c9b",
+      "size": 14071
+    },
+    {
+      "path": "vendor/sdl2/ext/bitmapfont.py",
+      "sha256": "53b9c79ff3cd36f51ab1194f95917a4582113323f8370c8920a51d0b81519f35",
+      "size": 11429
+    },
+    {
+      "path": "vendor/sdl2/ext/color.py",
+      "sha256": "0f2c9361f8b61c9653b3a6893ba48adb1202e19739d12e4ac2a13c05c34dbf9d",
+      "size": 19095
+    },
+    {
+      "path": "vendor/sdl2/ext/colorpalettes.py",
+      "sha256": "5232f18b609f99fe6418b6a6d086ea5edd75b6254af0e78d84efcefc16d0c19c",
+      "size": 13772
+    },
+    {
+      "path": "vendor/sdl2/ext/common.py",
+      "sha256": "61e35f962e3a17683f3ebfc84590ecad7d5232dacdf5afa16bf5678b6b6777f6",
+      "size": 5417
+    },
+    {
+      "path": "vendor/sdl2/ext/compat.py",
+      "sha256": "aee1689c4fb2e9eacb5911ca11bc9bbcef43acddd9a6c0820ec352217a340e50",
+      "size": 5001
+    },
+    {
+      "path": "vendor/sdl2/ext/displays.py",
+      "sha256": "310fd59cd3354753a82c945203e54f4e99d5c892dab5d0772175f9f45ba972d2",
+      "size": 7695
+    },
+    {
+      "path": "vendor/sdl2/ext/draw.py",
+      "sha256": "44692ed238dc1140b879251f74640efade2d461763f4d84d581423a50209fe77",
+      "size": 7425
+    },
+    {
+      "path": "vendor/sdl2/ext/ebs.py",
+      "sha256": "ee66f73907287c505ffba31cfda98832a1b78c84053c3fb114a5e5094f2fc79f",
+      "size": 10587
+    },
+    {
+      "path": "vendor/sdl2/ext/err.py",
+      "sha256": "364d31c718c35c64e3e2b04d9939e70c1a82d6a84f63431842435f7f894a3962",
+      "size": 1908
+    },
+    {
+      "path": "vendor/sdl2/ext/events.py",
+      "sha256": "c50df0108537d65dde04bb22b83a066a06cc63dff187c3fbab56a1292d4975c8",
+      "size": 2927
+    },
+    {
+      "path": "vendor/sdl2/ext/image.py",
+      "sha256": "c1359434bd6958fb7b0436792fc59dd97d6a1b865ec8c0989d607b7a7974913a",
+      "size": 14621
+    },
+    {
+      "path": "vendor/sdl2/ext/mouse.py",
+      "sha256": "69a34a9034ff8428fb02dfee49860cb565b37854fb5ffd1623da5bf4b69c8cbf",
+      "size": 6354
+    },
+    {
+      "path": "vendor/sdl2/ext/msgbox.py",
+      "sha256": "2df9a0b5156a84f55f6a0e985401f085c277a60dd061c9f30148f7ac8d2423a1",
+      "size": 9298
+    },
+    {
+      "path": "vendor/sdl2/ext/particles.py",
+      "sha256": "7f8c7612bc549ed45b99abeff6cee8578501072bfb79c87a1faf834506010a8b",
+      "size": 4121
+    },
+    {
+      "path": "vendor/sdl2/ext/pixelaccess.py",
+      "sha256": "090fef1cbf988f1a34fcfde2ae60dd225c4a715d4969b6a307832770d14eea3d",
+      "size": 12541
+    },
+    {
+      "path": "vendor/sdl2/ext/renderer.py",
+      "sha256": "4af8c95abb73479985bf8b86e94892439344482bf4714765ef2896fd7fab1afd",
+      "size": 32291
+    },
+    {
+      "path": "vendor/sdl2/ext/resources.py",
+      "sha256": "eae878d3a9df1a7eeaa07ca4a3f0b46a9b2fd077c8d6b1220db916c67e50145a",
+      "size": 13976
+    },
+    {
+      "path": "vendor/sdl2/ext/sprite.py",
+      "sha256": "e02be4c5d617f263592f4a5d15f87a55298499e47205b0ecef3c61ff2db68edb",
+      "size": 4839
+    },
+    {
+      "path": "vendor/sdl2/ext/spritesystem.py",
+      "sha256": "274840ac215f412bab7710d82f3f58e1e6d32f269c1e20216d26a596681acf2b",
+      "size": 14308
+    },
+    {
+      "path": "vendor/sdl2/ext/surface.py",
+      "sha256": "104b873f319b6b667f4257cd357c2945e497f89fc4a76c6cc3f0e98dfc14002b",
+      "size": 4404
+    },
+    {
+      "path": "vendor/sdl2/ext/ttf.py",
+      "sha256": "ed914c0a2c4ddb07910a5dcfc08a058f5c2225f27fdd7283dfac4f85de8311cb",
+      "size": 32637
+    },
+    {
+      "path": "vendor/sdl2/ext/uisystem.py",
+      "sha256": "8f154813c5222874cfa1c31e23b444256b7cc01c604570ae691c77a15d9f8442",
+      "size": 13584
+    },
+    {
+      "path": "vendor/sdl2/ext/window.py",
+      "sha256": "c787a934bd831f79509dc4e0a71411195e5d3411a4cb719a7c2fbac2d1fb12c1",
+      "size": 10712
+    },
+    {
+      "path": "vendor/sdl2/filesystem.py",
+      "sha256": "253f3d4f83bffb2069f43391cbb621fb7551422e910509fc1caba9ad13afc07c",
+      "size": 568
+    },
+    {
+      "path": "vendor/sdl2/gamecontroller.py",
+      "sha256": "92564535d066f6c0be563b3264e2c753dafbd0820577aa074e91fd94d3aa0a2d",
+      "size": 16652
+    },
+    {
+      "path": "vendor/sdl2/gesture.py",
+      "sha256": "b52be2e2cc0a891f30a6a0de4fc2bca40e402dfca410adf7fdfef669ff043978",
+      "size": 1074
+    },
+    {
+      "path": "vendor/sdl2/guid.py",
+      "sha256": "10f7023b467cf03e144247bf9b0c193b278c16fd01042a0d3244fb1bf4e65984",
+      "size": 1156
+    },
+    {
+      "path": "vendor/sdl2/haptic.py",
+      "sha256": "0504fa6a4c9c14e52bbcb7f64df4cba90b3bfe0228d261c62035c7fe8cba8516",
+      "size": 8631
+    },
+    {
+      "path": "vendor/sdl2/hidapi.py",
+      "sha256": "1f1cd297e2fb0e3ab70ea13adad9f49995c4c5bfa113953e6ed787f2eeacac2b",
+      "size": 4323
+    },
+    {
+      "path": "vendor/sdl2/hints.py",
+      "sha256": "f2fb830f0569119b945d1fc9aca35cdb79cef229d8ab634cd876eed3d5261373",
+      "size": 20384
+    },
+    {
+      "path": "vendor/sdl2/joystick.py",
+      "sha256": "2219468837544efd4144053a59ff188c1bbd8cd498b6c061549c46b7b5eec2b3",
+      "size": 12872
+    },
+    {
+      "path": "vendor/sdl2/keyboard.py",
+      "sha256": "eb812765b9b11af5721e6019efa1b94f7ec2769017a836585cd69ea392ada6d6",
+      "size": 2946
+    },
+    {
+      "path": "vendor/sdl2/keycode.py",
+      "sha256": "ba9be6c9627cd16bcd459541f80d09422da4f51cbce7aef5aea7199cc9205d3c",
+      "size": 12723
+    },
+    {
+      "path": "vendor/sdl2/loadso.py",
+      "sha256": "3adc5ad5dcc3a53fd72290e409da39bc02cb895b28beb679de4b11ea9b8a7ff1",
+      "size": 668
+    },
+    {
+      "path": "vendor/sdl2/locale.py",
+      "sha256": "78ad6226b498e8cf7e4df403769e0e89bf9b912a27b8437200683080cf76e0cf",
+      "size": 1956
+    },
+    {
+      "path": "vendor/sdl2/log.py",
+      "sha256": "a63fb9b8dcd7928fa7c50be5aad2e48c84a97c609d76d4333560d9c082863342",
+      "size": 3867
+    },
+    {
+      "path": "vendor/sdl2/messagebox.py",
+      "sha256": "79e1f773b8844df0d8250fc17b981b1fca1e91560b52304b68833185c6410eea",
+      "size": 2823
+    },
+    {
+      "path": "vendor/sdl2/metal.py",
+      "sha256": "7fad10b7f95b695606145ee8bf3db35c8e54e52390fdc59a9d01402212ff9e7f",
+      "size": 1290
+    },
+    {
+      "path": "vendor/sdl2/misc.py",
+      "sha256": "0f694c8e2b900dd03135ed0c7a5244f7b6130c6649690a0cf4c7ee72d1de5cec",
+      "size": 465
+    },
+    {
+      "path": "vendor/sdl2/mouse.py",
+      "sha256": "8fc495b43cd15c566a53457968cc2606806d9e623e69b1c4633bb232e85b086d",
+      "size": 4352
+    },
+    {
+      "path": "vendor/sdl2/pixels.py",
+      "sha256": "7cc4d08af3f5c77c15c68a61a7201dcb61f8df1ca55e8bb4573b035c58784171",
+      "size": 18957
+    },
+    {
+      "path": "vendor/sdl2/platform.py",
+      "sha256": "0e6f4c63dfba9630c5eeaac49d50e6cc3d47fb495850f640b13cc5d2169cb4c9",
+      "size": 451
+    },
+    {
+      "path": "vendor/sdl2/power.py",
+      "sha256": "f3eb34a75a087286f992efc5ddd5c4b65eeb761d79e3aef838723cf2421b09b0",
+      "size": 880
+    },
+    {
+      "path": "vendor/sdl2/rect.py",
+      "sha256": "5e44bb60c2ef93aca94e14c1eedb555661edbb2c3a78b3c5e2c6ec319f286fb0",
+      "size": 6515
+    },
+    {
+      "path": "vendor/sdl2/render.py",
+      "sha256": "7414daf92597b43087a11711d4cf72b1f720526d030b75183a40e65aea973188",
+      "size": 16883
+    },
+    {
+      "path": "vendor/sdl2/rwops.py",
+      "sha256": "5d49d16126a70312ca3266129113b6896358d746ab0279c66cd371f8deef5f3e",
+      "size": 10643
+    },
+    {
+      "path": "vendor/sdl2/scancode.py",
+      "sha256": "6deec831cc40c0d5882f7363f97ce4b9601cb1760f2e6a28e2e37826deda215b",
+      "size": 6513
+    },
+    {
+      "path": "vendor/sdl2/sdlgfx.py",
+      "sha256": "22f53173482ec152440d5029676f826b2da57ccf476e66251de55c007ff58580",
+      "size": 77357
+    },
+    {
+      "path": "vendor/sdl2/sdlimage.py",
+      "sha256": "c71089531fcd991f01f26f31023e9245e92cc2027de3ef087a5c85368d5c2503",
+      "size": 40155
+    },
+    {
+      "path": "vendor/sdl2/sdlmixer.py",
+      "sha256": "b7877f6aad61fd3ac4414435aea8807d0eaa166cb7ffcff8c53a2d69044a5778",
+      "size": 46750
+    },
+    {
+      "path": "vendor/sdl2/sdlttf.py",
+      "sha256": "3fe12dd49299ad7bb3527ec97a88909859c18c2c32bed546c158d8986ae12f02",
+      "size": 82972
+    },
+    {
+      "path": "vendor/sdl2/sensor.py",
+      "sha256": "0afddca5a18111384fae4119e76cf97d8d6792f09a2661cdcc4c0c9fb75d3d92",
+      "size": 3460
+    },
+    {
+      "path": "vendor/sdl2/shape.py",
+      "sha256": "d50433fb48d4b3c3f003e7dab28a8e39950959931c7ad1d8e23e554b5a891151",
+      "size": 2252
+    },
+    {
+      "path": "vendor/sdl2/stdinc.py",
+      "sha256": "3a6d683e28939845d884256d3c050e2fc78750d0641008f365e5a9b7bb24884d",
+      "size": 2139
+    },
+    {
+      "path": "vendor/sdl2/surface.py",
+      "sha256": "99f4c7c2b851d16036fb18b0441dd78ab4590cfdad4b69412282871660f723b7",
+      "size": 8315
+    },
+    {
+      "path": "vendor/sdl2/syswm.py",
+      "sha256": "715be7526c7a7b509cde448dd10e97763f3646ab3d2dec34ed8bd8ababce8afd",
+      "size": 6048
+    },
+    {
+      "path": "vendor/sdl2/timer.py",
+      "sha256": "1ff8b49ebfbb082294ab7364d57c5878e3f66472ef851591a658c27147335eba",
+      "size": 1506
+    },
+    {
+      "path": "vendor/sdl2/touch.py",
+      "sha256": "6e77f53b7154b36fb41726f8292cf3979b1b50ed3be58ba25a7019451b0f67f7",
+      "size": 2067
+    },
+    {
+      "path": "vendor/sdl2/version.py",
+      "sha256": "bcfdd0aa02996f49982543e19403955fc83f0552994f5d65b19a6db6a69e8566",
+      "size": 1740
+    },
+    {
+      "path": "vendor/sdl2/video.py",
+      "sha256": "8a20f6c0383197c4d8d09b91d9fccb4676389fe7ee95a4bd7d25a33471845ed1",
+      "size": 22116
+    },
+    {
+      "path": "vendor/sdl2/vulkan.py",
+      "sha256": "399ba88cd119bdf1a5bcbf95c695216ed283e86daf1d72e4a6e153ac79dc62c1",
+      "size": 1666
+    }
+  ],
+  "release_asset": {
+    "name": "trimui-xiaozhi-v0.1.0.zip",
+    "sha256": "12abd511707f21f1467508e08ec832e22391ca7881e410aad83f64ec9fd870ab",
+    "size": 2291639
+  },
+  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.1.0 - 2026-10-02\n\n- Phien ban dau tien: tro ly giong noi Xiaozhi cho TrimUI (Python + SDL2).\n- Doi ten hien thi tren may thanh **Trimui-XiaoZhi** (truoc day \"Trimui Xiaozhi\");\n  thu muc cai dat `Apps/Trimui-XiaoZhi`, launch.sh van chay duoc voi ten thu muc cu.\n- Logo khoi dong NLK kieu Netflix (2.2 giay, bam phim bat ky de bo qua,\n  tat duoc trong Cai dat -> Intro NLK).\n- Cai dat: giai nen ZIP vao goc the nho de co `Apps/TrimuiXiaozhi/launch.sh`."
+}

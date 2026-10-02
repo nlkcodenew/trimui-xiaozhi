@@ -1,0 +1,9 @@
+{
+  "label": "Trimui-XiaoZhi",
+  "icon": "icon.png",
+  "iconsel": "icon.png",
+  "background": "background.png",
+  "launch": "launch.sh",
+  "description": "Tro ly giong noi Xiaozhi cho TrimUI Smart Pro S",
+  "author": "Trimui-XiaoZhi"
+}
