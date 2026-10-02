@@ -1,5 +1,12 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.1.3 - 2026-10-02
+
+- **Sửa crash khi mở app** (bản 0.1.2): nhánh vẽ chữ dự phòng truyền số thực vào `SDL_Rect`; `pysdl2` chỉ nhận `int`. Đã ép kiểu int mọi tọa độ.
+- Nhánh dự phòng còn xảy ra vì `TTF_OpenFont(font, 300)` bị SDL_ttf trên máy từ chối → app rơi về chữ nhỏ. Giờ thử dần các cỡ chữ (giant → nhỏ dần) và ghi cỡ dùng được vào `logs/app.log`.
+- Logo về **đúng thuật toán Music-Player**: `giant = 132 × max(0.75, min(w/1024, h/768))`, `fit = min(1, (w-80)/total)`, hằng số gốc (rise 90, overshoot −14, quầng +4/+6, giãn chữ 4→30, quét tráng 0.72→1.00), 2.2 giây, bấm phím bỏ qua. Trên máy 1024×768 cho `k = 1.0` → hình y hệt Music-Player.
+- Test mới: tọa độ dự phòng phải là `int`; công thức `giant`; giá trị `spread`; `fit` không bao giờ phóng to.
+
 ## v0.1.2 - 2026-10-02
 
 - Sửa logo NLK "bé và lệch": intro vẽ trong **logical space 1280x720** (đúng `SDL_RenderSetLogicalSize`) thay vì dùng kích thước màn hình thật (1024x768 trên Brick) — sai lệch này làm chữ lệch tâm và co lại.

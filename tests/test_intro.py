@@ -122,10 +122,18 @@ def reset():
     sdl2.event_queue.clear()
 
 
+def with_giant(screen, size=None):
+    """Font giant hien nay giu rieng (intro_font); mac dinh size 132 cua
+    Music-Player tren man hinh chuan 1024x768."""
+    screen.fonts = {}
+    screen.intro_font = object()
+    screen.intro_font_size = size or int(app.INTRO_REF_GIANT)
+    return screen
+
+
 def test_intro_presents_and_frees_textures():
     reset()
-    screen = make_screen()
-    screen.fonts = {app.GIANT_SIZE: object()}
+    screen = with_giant(make_screen())
     screen.play_intro(duration=0.05)
     assert sdl2.state["present"] > 0, "every intro frame must Present"
     assert sdl2.state["blits"] > 0, "pre-rendered glyphs must be blitted"
@@ -136,8 +144,7 @@ def test_intro_presents_and_frees_textures():
 
 def test_intro_skip_on_key_frees_textures():
     reset()
-    screen = make_screen()
-    screen.fonts = {app.GIANT_SIZE: object()}
+    screen = with_giant(make_screen())
     sdl2.event_queue.append(sdl2.SDL_KEYDOWN)
     started = time.monotonic()
     screen.play_intro(duration=30.0)
@@ -150,16 +157,46 @@ def test_intro_fallback_without_giant_font():
     reset()
     screen = make_screen()
     screen.fonts = {}
+    screen.intro_font = None
+    screen.intro_font_size = 0
     screen.text = lambda *a, **k: 0  # stub out TTF text path
     screen.play_intro(duration=0.05)  # must not crash
     assert sdl2.state["present"] > 0
     assert sdl2.state["created"] == [] and sdl2.state["destroyed"] == []
 
 
+def test_intro_fallback_passes_int_coordinates():
+    """Regression: SDL_Rect cua pysdl2 khong nhan float. Nhanh fallback ve
+    bang text thuong, toa do phai int - truoc day app crash ngay khi mo."""
+    screen = make_screen()
+    screen.fonts = {}
+    screen.intro_font = None
+    screen.intro_font_size = 0
+    seen = []
+
+    def fake_text(value, x, y, size=24, color=None, max_width=1140):
+        seen.append((x, y))
+        return y
+
+    screen.text = fake_text
+    screen._render_intro_frame(1.0, glyphs=None)
+    assert seen, "fallback must draw letters"
+    for x, y in seen:
+        assert isinstance(x, int) and isinstance(y, int), \
+            "SDL_Rect needs int, got %r" % (type(x),)
+
+
+def test_intro_scale_follows_actual_font_size():
+    """Neu SDL_ttf tu choi co chu lon, moi hieu ung phai scale theo co chu
+    that su mo duoc de hinh anh giong het."""
+    screen = with_giant(make_screen(), size=100)
+    assert abs(screen._intro_scale() - 100 / app.INTRO_REF_GIANT) < 1e-9
+
+
 def test_intro_disabled_setting():
     reset()
     screen = make_screen(intro=False)
-    screen.fonts = {app.GIANT_SIZE: object()}
+    with_giant(screen)
     screen.play_intro(duration=0.05)
     assert sdl2.state["present"] == 0
     assert sdl2.state["created"] == []
@@ -169,8 +206,7 @@ def test_intro_layout_uses_logical_space_not_screen_size():
     """Regression: intro ve trong logical 1280x720 (SDL_RenderSetLogicalSize).
     Tinh toa do bang kich thuoc man hinh that (1024x768 tren Brick) lam chu
     lech khoi tam va nho hon - dung la ly do logo "be va lech"."""
-    screen = make_screen()
-    screen.fonts = {app.GIANT_SIZE: object()}
+    screen = with_giant(make_screen())
     recorded = []
     bright = {("N", "bright"): object(), ("L", "bright"): object(), ("K", "bright"): object()}
     glyphs = {}
@@ -192,26 +228,34 @@ def test_intro_layout_uses_logical_space_not_screen_size():
     center_x = (left + right) / 2.0
     assert abs(center_x - app.LOGICAL_W / 2.0) < 2.0, \
         "logo must be centered in logical space, got center %.1f" % center_x
-    # Chieu cao chu that su (cap/em ~0.72 cua co chu DejaVu) phai ~30% man hinh,
-    # khong phai "be".
-    cap_ratio = 0.72
-    cap_height = app.GIANT_SIZE * cap_ratio
-    assert app.LOGICAL_H * 0.25 <= cap_height <= app.LOGICAL_H * 0.40, \
-        "cap height %.0f outside 25-40%% of %d" % (cap_height, app.LOGICAL_H)
-    # Logo phai chiem phan lon be ngang, khong phai 1/4 man hinh nhu ban truoc.
-    logo_width = sum(w for _t, _x, _y, w, _h in letters) + 2 * 30 * screen._intro_scale()
-    assert logo_width >= app.LOGICAL_W * 0.40, \
-        "logo too narrow: %d of %d" % (logo_width, app.LOGICAL_W)
+    # Ty le chu phai Y HET Music-Player tren man hinh chuan: giant 132 ->
+    # k = 1.0, khong phong to, khong thu nho.
+    assert abs(screen._intro_scale() - 1.0) < 1e-9, \
+        "giant phai 132 tren man hinh chuan, got k=%.3f" % screen._intro_scale()
+    assert screen._intro_fit([99, 74, 90], 99 + 74 + 90 + 60) == 1.0, \
+        "fit phai = 1 tren man hinh chuan (khong phong to)"
+    # Man hinh nho: chi co xuong, khong tran (fit <= 1).
+    tiny = app.Screen.__new__(app.Screen)
+    tiny.intro_font_size = 132
+    assert tiny._intro_fit([99, 74, 90], 2000) <= 1.0
 
 
-def test_intro_giant_font_matches_reference_ratio():
-    """Ti le chu phai khop khuon Music-Player/chiaki-ng (rise, overshoot,
-    glow, spread deu nhan them he so GIANT/132)."""
-    screen = make_screen()
-    assert abs(screen._intro_scale() - app.GIANT_SIZE / 132.0) < 1e-9
-    # Spread 4..30 (don via chuan) * he do.
-    assert abs(screen._intro_spread(0.0) - 4 * screen._intro_scale()) < 1e-6
-    assert abs(screen._intro_spread(1.0) - 30 * screen._intro_scale()) < 1e-6
+def test_intro_giant_matches_music_player_formula():
+    """giant = 132 * max(0.75, min(w/1024, h/768)) - dung cong thuc cu
+    Music-Player de chu co giong het tren may Brick (1024x768 -> 132)."""
+    for width, height, expected_scale in ((1024, 768, 1.0), (1280, 720, 0.9375),
+                                          (640, 480, 0.75), (1920, 1080, 1.40625)):
+        scale = max(0.75, min(width / 1024.0, height / 768.0))
+        assert abs(scale - expected_scale) < 1e-6, (width, height, scale)
+        assert max(24, int(round(app.INTRO_REF_GIANT * scale))) == int(round(132 * expected_scale))
+
+
+def test_intro_spread_matches_music_player():
+    screen = with_giant(make_screen())
+    # Spread 4..30 (don via chuan), k = 1.0 tren man hinh chuan.
+    assert abs(screen._intro_spread(0.0) - 4.0) < 1e-6
+    assert abs(screen._intro_spread(1.0) - 30.0) < 1e-6
+    assert abs(screen._intro_spread(0.275) - 23.5) < 1e-6, "ease-out tai progress/0.55 = 0.5"
 
 
 def test_intro_setting_registered():
@@ -226,8 +270,11 @@ if __name__ == "__main__":
     test_intro_presents_and_frees_textures()
     test_intro_skip_on_key_frees_textures()
     test_intro_fallback_without_giant_font()
+    test_intro_fallback_passes_int_coordinates()
+    test_intro_scale_follows_actual_font_size()
     test_intro_disabled_setting()
     test_intro_layout_uses_logical_space_not_screen_size()
-    test_intro_giant_font_matches_reference_ratio()
+    test_intro_giant_matches_music_player_formula()
+    test_intro_spread_matches_music_player()
     test_intro_setting_registered()
     print("intro tests passed")

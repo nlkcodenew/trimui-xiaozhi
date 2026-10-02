@@ -49,11 +49,9 @@ INTRO_DURATION = 2.2
 # thuoc man hinh that. Neu ve bang kich thuoc that (1024x768 tren Brick) thi
 # chu lech khoi tam va nho hon tren man hinh.
 LOGICAL_W, LOGICAL_H = 1280, 720
-# Chieu cao chu xong doang ~30% man hinh. Music-Player/chiaki-ng dung
-# giant = hero x 3 va hien "dung 3x"; ty le 30% cho logo kieu Netflix.
-GIANT_SIZE = int(round(LOGICAL_H * 0.30 / 0.72))  # 0.72 = ty le caps/em cua DejaVu
-# He so moi truong so voi Music-Player (giant 132) de rise/overshoot/glow/
-# spread giu dung ty le hinh anh khi doi co chu.
+# Dung nguyen khuon Music-Player: giant = 132 * max(0.75, min(w/1024, h/768)),
+# fit = min(1, (w-80)/total). Tren man hinh chuan 1024x768 -> scale = 1.0 ->
+# giant 132 va k = 1.0, tuc hinh anh y het Music-Player.
 INTRO_REF_GIANT = 132.0
 
 
@@ -123,11 +121,29 @@ class Screen:
                 raise RuntimeError("Cannot load font")
         # Giant glyphs for the NLK boot logo, pre-rendered once before the
         # intro loop. Non-fatal: intro falls back to plain text without it.
-        try:
-            giant = ttf.TTF_OpenFont(font, GIANT_SIZE)
-        except Exception:
-            giant = None
-        self.fonts[GIANT_SIZE] = giant or None
+        #
+        # Khuon y het Music-Player: giant = 132 * max(0.75, min(w/1024, h/768))
+        # tinh tren KICH THUOC MAN HINH THAT, sau do ve trong logical space.
+        # Neu SDL_ttf tu choi co chu do, thu nho dan theo thu tu.
+        scale = max(0.75, min(self.width / 1024.0, self.height / 768.0))
+        self.intro_giant = max(24, int(round(INTRO_REF_GIANT * scale)))
+        self.intro_font = None
+        self.intro_font_size = 0
+        candidates = [self.intro_giant]
+        for smaller in (self.intro_giant - 8, 132, 120, 100):
+            if 0 < smaller < self.intro_giant and smaller not in candidates:
+                candidates.append(smaller)
+        for candidate in candidates:
+            try:
+                probe = ttf.TTF_OpenFont(font, candidate)
+            except Exception:
+                probe = None
+            if probe:
+                self.intro_font = probe
+                self.intro_font_size = candidate
+                break
+        logging.info("intro giant font: size=%s (wanted %s, scale=%.3f)",
+                     self.intro_font_size or "none", self.intro_giant, scale)
         for index in range(sdl2.SDL_NumJoysticks()):
             if sdl2.SDL_IsGameController(index):
                 controller = sdl2.SDL_GameControllerOpen(index)
@@ -208,7 +224,7 @@ class Screen:
             self._free_intro_glyphs(glyphs)
 
     def _intro_glyph(self, letter, color):
-        font = self.fonts.get(GIANT_SIZE)
+        font = getattr(self, "intro_font", None)
         if not font:
             return (None, 0, 0)
         try:
@@ -243,6 +259,8 @@ class Screen:
                     texture, width, height = (None, 0, 0)
                 if texture:
                     cache[(letter, name)] = (texture, width, height)
+        logging.info("intro glyphs cached=%d font_size=%s",
+                     len(cache), getattr(self, "intro_font_size", 0))
         return cache
 
     def _free_intro_glyphs(self, glyphs):
@@ -264,7 +282,20 @@ class Screen:
             return False
 
     def _intro_scale(self):
-        return GIANT_SIZE / INTRO_REF_GIANT
+        # k = giant / 132. Tren man hinh chuan 1024x768 k = 1.0 tuc hinh anh
+        # y het Music-Player; man hinh nho hon thi moi hieu ung co lai theo
+        # dung ty le hinh anh.
+        size = getattr(self, "intro_font_size", 0) or INTRO_REF_GIANT
+        return size / INTRO_REF_GIANT
+
+    def _intro_fit(self, widths, total):
+        """Dung y Music-Player: fit = min(1, (w-80)/total).
+
+        Chi CO xuong cho man hinh nho, khong phong to len (giong ban goc).
+        """
+        if total <= 0:
+            return 1.0
+        return max(0.05, min(1.0, (LOGICAL_W - 80) / float(total)))
 
     def _intro_spread(self, progress):
         ease = min(1.0, max(0.0, progress / 0.55))
@@ -277,15 +308,19 @@ class Screen:
         if glyphs:
             self._render_intro_glyphs(progress, glyphs)
         else:
-            step = 90 * self._intro_scale()
+            # Fallback khi khong mo duoc font giant: ve bang text thuong.
+            # Moi toa do phai la int - SDL_Rect (pysdl2) khong nhan float.
+            k = self._intro_scale()
+            step = int(90 * k)
             cursor = LOGICAL_W // 2 - step
             for index, letter in enumerate("NLK"):
                 enter_at = 0.05 + index * 0.16
                 local = (progress - enter_at) / 0.30
                 if local > 0.0:
                     local = min(1.0, local)
-                    rise = int((1.0 - local) * 90 * self._intro_scale())
-                    self.text(letter, cursor, LOGICAL_H // 2 - 30 + rise, 52, INTRO_RED)
+                    rise = int((1.0 - local) * 90 * k)
+                    self.text(letter, int(cursor), int(LOGICAL_H // 2 - 30) + rise,
+                              52, INTRO_RED)
                 cursor += step
         sdl2.SDL_RenderPresent(self.renderer)
 
@@ -296,9 +331,10 @@ class Screen:
         try:
             widths = [glyphs[(letter, "bright")][1] for letter in "NLK"]
         except (KeyError, TypeError):
-            widths = [int(100 * k)] * 3
+            # Ty le chu cua DejaVu o co chu 132 (do bang PIL).
+            widths = [int(99 * k), int(74 * k), int(90 * k)]
         total = sum(widths) + spacing * 2
-        fit = min(1.0, (LOGICAL_W - 80) / total) if total > 0 else 1.0
+        fit = self._intro_fit(widths, total)
         cursor = (LOGICAL_W - total * fit) // 2
         for index, letter in enumerate("NLK"):
             width = widths[index]
@@ -323,7 +359,8 @@ class Screen:
                 if local * 1.5 >= 0.75:
                     try:
                         glow, _gw, _gh = glyphs[(letter, "dark")]
-                        self._intro_blit(glow, x + 4 * fit * k, y + 6 * fit * k,
+                        # Music-Player: quang lech +4/+6 (nhan theo fit).
+                        self._intro_blit(glow, x + 4 * fit, y + 6 * fit,
                                          dest_w, dest_h)
                     except (KeyError, TypeError):
                         pass
@@ -522,6 +559,10 @@ class Screen:
     def close(self):
         for controller in self.controllers:
             sdl2.SDL_GameControllerClose(controller)
+        giant = getattr(self, "intro_font", None)
+        if giant:
+            ttf.TTF_CloseFont(giant)
+            self.intro_font = None
         for font in self.fonts.values():
             if font:
                 ttf.TTF_CloseFont(font)
