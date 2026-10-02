@@ -165,6 +165,55 @@ def test_intro_disabled_setting():
     assert sdl2.state["created"] == []
 
 
+def test_intro_layout_uses_logical_space_not_screen_size():
+    """Regression: intro ve trong logical 1280x720 (SDL_RenderSetLogicalSize).
+    Tinh toa do bang kich thuoc man hinh that (1024x768 tren Brick) lam chu
+    lech khoi tam va nho hon - dung la ly do logo "be va lech"."""
+    screen = make_screen()
+    screen.fonts = {app.GIANT_SIZE: object()}
+    recorded = []
+    bright = {("N", "bright"): object(), ("L", "bright"): object(), ("K", "bright"): object()}
+    glyphs = {}
+    # Be rong chu that cua DejaVu o co chu 132 (do bang PIL), scale theo giant.
+    ratios = {"N": 99.0, "L": 74.0, "K": 90.0}
+    for letter in "NLK":
+        width = int(ratios[letter] * screen._intro_scale())
+        for name in ("dark", "bright", "white"):
+            glyphs[(letter, name)] = (bright[(letter, "bright")] if name == "bright"
+                                      else object(), width, 160)
+    screen._intro_blit = lambda texture, x, y, w, h: recorded.append((texture, x, y, w, h))
+    # progress = 1.0: chu da bay len va dung choi, khong con sweep.
+    screen._render_intro_glyphs(1.0, glyphs)
+    # Chi do 3 chu chinh; glow lech +4*k nen khong tinh vao bounding box.
+    letters = [item for item in recorded if item[0] in bright.values()]
+    assert len(letters) == 3, "3 letters must be blitted, got %d" % len(letters)
+    left = min(x for _t, x, _y, _w, _h in letters)
+    right = max(x + w for _t, x, _y, w, _h in letters)
+    center_x = (left + right) / 2.0
+    assert abs(center_x - app.LOGICAL_W / 2.0) < 2.0, \
+        "logo must be centered in logical space, got center %.1f" % center_x
+    # Chieu cao chu that su (cap/em ~0.72 cua co chu DejaVu) phai ~30% man hinh,
+    # khong phai "be".
+    cap_ratio = 0.72
+    cap_height = app.GIANT_SIZE * cap_ratio
+    assert app.LOGICAL_H * 0.25 <= cap_height <= app.LOGICAL_H * 0.40, \
+        "cap height %.0f outside 25-40%% of %d" % (cap_height, app.LOGICAL_H)
+    # Logo phai chiem phan lon be ngang, khong phai 1/4 man hinh nhu ban truoc.
+    logo_width = sum(w for _t, _x, _y, w, _h in letters) + 2 * 30 * screen._intro_scale()
+    assert logo_width >= app.LOGICAL_W * 0.40, \
+        "logo too narrow: %d of %d" % (logo_width, app.LOGICAL_W)
+
+
+def test_intro_giant_font_matches_reference_ratio():
+    """Ti le chu phai khop khuon Music-Player/chiaki-ng (rise, overshoot,
+    glow, spread deu nhan them he so GIANT/132)."""
+    screen = make_screen()
+    assert abs(screen._intro_scale() - app.GIANT_SIZE / 132.0) < 1e-9
+    # Spread 4..30 (don via chuan) * he do.
+    assert abs(screen._intro_spread(0.0) - 4 * screen._intro_scale()) < 1e-6
+    assert abs(screen._intro_spread(1.0) - 30 * screen._intro_scale()) < 1e-6
+
+
 def test_intro_setting_registered():
     from service import DEFAULTS
     assert DEFAULTS.get("intro") is True
@@ -178,5 +227,7 @@ if __name__ == "__main__":
     test_intro_skip_on_key_frees_textures()
     test_intro_fallback_without_giant_font()
     test_intro_disabled_setting()
+    test_intro_layout_uses_logical_space_not_screen_size()
+    test_intro_giant_font_matches_reference_ratio()
     test_intro_setting_registered()
     print("intro tests passed")

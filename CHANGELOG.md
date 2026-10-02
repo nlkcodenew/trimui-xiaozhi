@@ -1,5 +1,12 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.1.2 - 2026-10-02
+
+- Sửa logo NLK "bé và lệch": intro vẽ trong **logical space 1280x720** (đúng `SDL_RenderSetLogicalSize`) thay vì dùng kích thước màn hình thật (1024x768 trên Brick) — sai lệch này làm chữ lệch tâm và co lại.
+- Chữ to lên gấp ~2 lần: `giant = 30% chiều cao màn hình` (300px thay vì 156px), logo chiếm 57% bề ngang thay vì 24%.
+- Rise / overshoot / quầng đỏ / giãn chữ nhân thêm hệ số `giant/132` nên hiệu ứng giữ **đúng tỉ lệ hình ảnh** như Music-Player và chiaki-ng.
+- `tests/test_intro.py`: thêm 2 test chốt tâm logo theo logical space và tỉ lệ chữ (chặn tái phát lỗi lệch/bé).
+
 ## v0.1.1 - 2026-10-02
 
 - OTA tự động: `ota-update.sh` (shell thuần, không cần python3) chạy nền từ `launch.sh`, tự kiểm `manifest.json` trên GitHub, tải file lệch SHA-256, staging rồi apply. App mở ngay, không phải chờ.

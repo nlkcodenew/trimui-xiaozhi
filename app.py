@@ -44,7 +44,17 @@ INTRO_RED = (229, 9, 20)
 INTRO_DARK = (60, 5, 8)
 INTRO_WHITE = (255, 255, 255)
 INTRO_DURATION = 2.2
-GIANT_SIZE = 156  # 52 x 3, NLK boot logo hero glyphs
+
+# Intro ve trong LOGICAL space (khop SDL_RenderSetLogicalSize), khong phai kich
+# thuoc man hinh that. Neu ve bang kich thuoc that (1024x768 tren Brick) thi
+# chu lech khoi tam va nho hon tren man hinh.
+LOGICAL_W, LOGICAL_H = 1280, 720
+# Chieu cao chu xong doang ~30% man hinh. Music-Player/chiaki-ng dung
+# giant = hero x 3 va hien "dung 3x"; ty le 30% cho logo kieu Netflix.
+GIANT_SIZE = int(round(LOGICAL_H * 0.30 / 0.72))  # 0.72 = ty le caps/em cua DejaVu
+# He so moi truong so voi Music-Player (giant 132) de rise/overshoot/glow/
+# spread giu dung ty le hinh anh khi doi co chu.
+INTRO_REF_GIANT = 132.0
 
 
 class Screen:
@@ -253,9 +263,12 @@ class Screen:
         except Exception:
             return False
 
+    def _intro_scale(self):
+        return GIANT_SIZE / INTRO_REF_GIANT
+
     def _intro_spread(self, progress):
         ease = min(1.0, max(0.0, progress / 0.55))
-        return 4 + (30 - 4) * (1 - (1 - ease) * (1 - ease))
+        return (4 + (30 - 4) * (1 - (1 - ease) * (1 - ease))) * self._intro_scale()
 
     def _render_intro_frame(self, progress, glyphs=None):
         progress = max(0.0, min(1.0, float(progress)))
@@ -264,28 +277,29 @@ class Screen:
         if glyphs:
             self._render_intro_glyphs(progress, glyphs)
         else:
-            cursor = self.width // 2 - 90
+            step = 90 * self._intro_scale()
+            cursor = LOGICAL_W // 2 - step
             for index, letter in enumerate("NLK"):
                 enter_at = 0.05 + index * 0.16
                 local = (progress - enter_at) / 0.30
-                if local <= 0.0:
-                    cursor += 60
-                    continue
-                rise = int((1.0 - min(1.0, local)) * 60)
-                self.text(letter, cursor, self.height // 2 - 30 + rise, 52, INTRO_RED)
-                cursor += 60
+                if local > 0.0:
+                    local = min(1.0, local)
+                    rise = int((1.0 - local) * 90 * self._intro_scale())
+                    self.text(letter, cursor, LOGICAL_H // 2 - 30 + rise, 52, INTRO_RED)
+                cursor += step
         sdl2.SDL_RenderPresent(self.renderer)
 
     def _render_intro_glyphs(self, progress, glyphs):
-        center_y = self.height // 2
+        center_y = LOGICAL_H // 2
+        k = self._intro_scale()
         spacing = self._intro_spread(progress)
         try:
             widths = [glyphs[(letter, "bright")][1] for letter in "NLK"]
         except (KeyError, TypeError):
-            widths = [180, 180, 180]
+            widths = [int(100 * k)] * 3
         total = sum(widths) + spacing * 2
-        fit = min(1.0, (self.width - 80) / total) if total > 0 else 1.0
-        cursor = (self.width - total * fit) // 2
+        fit = min(1.0, (LOGICAL_W - 80) / total) if total > 0 else 1.0
+        cursor = (LOGICAL_W - total * fit) // 2
         for index, letter in enumerate("NLK"):
             width = widths[index]
             try:
@@ -302,14 +316,15 @@ class Screen:
             local = (progress - enter_at) / 0.30
             if local > 0.0:
                 local = min(1.0, local)
-                rise = int((1.0 - local) * 90)
+                rise = int((1.0 - local) * 90 * k)
                 if local > 0.65:
-                    rise += int(-14 * math.sin((local - 0.65) / 0.35 * math.pi))
+                    rise += int(-14 * k * math.sin((local - 0.65) / 0.35 * math.pi))
                 y = center_y - dest_h // 2 + rise
                 if local * 1.5 >= 0.75:
                     try:
                         glow, _gw, _gh = glyphs[(letter, "dark")]
-                        self._intro_blit(glow, x + 4 * fit, y + 6 * fit, dest_w, dest_h)
+                        self._intro_blit(glow, x + 4 * fit * k, y + 6 * fit * k,
+                                         dest_w, dest_h)
                     except (KeyError, TypeError):
                         pass
                     key = "bright"
@@ -323,7 +338,7 @@ class Screen:
             cursor += (width + spacing) * fit
         if progress > 0.72:
             sweep = (progress - 0.72) / 0.28
-            cursor = (self.width - total * fit) // 2
+            cursor = (LOGICAL_W - total * fit) // 2
             for index, letter in enumerate("NLK"):
                 width = widths[index]
                 try:
