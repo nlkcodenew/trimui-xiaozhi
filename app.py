@@ -115,6 +115,9 @@ class Screen:
         self._last_frame = 0.0
         self._dirty = True
         self._seen_history = 0
+        self._history_arrived_at = 0.0
+        self._last_dpad_action = ""
+        self._last_dpad_at = 0.0
         self._last_status = ""
 
     def init(self):
@@ -587,53 +590,76 @@ class Screen:
 
     def _draw_messages(self, c, box, x0, y0, w, h, alpha):
         history = self.service.history
+        now = time.monotonic()
         pad_in = c.px(22)
         max_w = w - pad_in * 2 - c.px(72)
         end = len(history) - self.scroll
-        visible = history[max(0, end - 40):end]
+        start = max(0, end - 40)
+        visible = history[start:end]
         if len(history) != self._seen_history:
             self._seen_history = len(history)
+            self._history_arrived_at = now
             self._dirty = True
         chat_size = self._font(self.service.settings.get("text_size", 24))
         line_h = int(chat_size * 1.36)
+        label_size = self._font(UI_SMALL)
+        label_h = c.px(24)
 
         if not visible:
             self._draw_empty(c, box, x0, y0, w, h)
             return
 
-        # do cao khung moi truoc de can chinh cuoi danh sach
+        # Tinh chieu cao that tung tin de NEO DUOI: tin moi nhat luon hien,
+        # tin cu nhat tu lui ra khi vuot khung (truoc day neo dinh nen tin
+        # moi bi ve tran xuong duoi vung nhin thay).
         blocks = []
-        for entry in visible:
+        for offset, entry in enumerate(visible):
             mine = entry.get("role") == "U"
             color = c.color("bubble_me") if mine else c.color("bubble_ai")
             text_color = c.color("text")
             lines = c.wrap(entry.get("text", ""), chat_size, max_w - c.px(24))
             if not lines:
                 continue
-            label = self.tr("BẠN", "YOU") if mine else "XIAOZHI"
-            blocks.append((mine, label, lines, color, text_color))
-        total = sum(c.px(30) + len(ls) * line_h + c.px(10) for _m, _l, ls, _c, _t in blocks)
-        y = y0 + h - pad_in - total
-        if y < y0 + pad_in:
-            y = y0 + pad_in
-        newest = len(self.service.history) - 1 - self.scroll
-        for index, (mine, label, lines, bubble, text_color) in enumerate(blocks):
-            bubble_w = min(max_w, max(c.measure(ln, chat_size) for ln in lines) + c.px(24))
+            label = self.tr("B\u1ea0N", "YOU") if mine else "XIAOZHI"
             bubble_h = len(lines) * line_h + c.px(16)
+            blocks.append({
+                "mine": mine, "label": label, "lines": lines,
+                "bubble": color, "text_color": text_color,
+                "hist": start + offset,
+                "bubble_h": bubble_h,
+                "height": label_h + bubble_h + c.px(10),
+            })
+        if not blocks:
+            self._draw_empty(c, box, x0, y0, w, h)
+            return
+
+        avail = h - pad_in * 2
+        total = sum(b["height"] for b in blocks)
+        while len(blocks) > 1 and total > avail:
+            total -= blocks.pop(0)["height"]
+        y = y0 + h - pad_in - total
+
+        newest = len(history) - 1 - self.scroll
+        grow = min(1.0, max(0.0, (now - self._history_arrived_at) * 3.0))
+        for b in blocks:
+            mine, label, lines = b["mine"], b["label"], b["lines"]
+            bubble, text_color = b["bubble"], b["text_color"]
+            bubble_w = min(max_w, max(c.measure(ln, chat_size) for ln in lines) + c.px(24))
             if mine:
                 bx = x0 + w - pad_in - bubble_w
+                lx = bx + bubble_w - c.measure(label, label_size)
             else:
                 bx = x0 + pad_in + c.px(34)
-            # tin moi nhat: truot len + mo dan
-            entry_index = max(0, end - len(visible) + index) - 1
+                lx = bx
+            # Tin moi nhat: truot len + mo dan (neo theo luc tin den).
             entry_alpha = alpha
             by = y
-            if entry_index == newest:
-                self._wave_phase += 0.0  # giu phase song song
-                grow = min(1.0, (time.monotonic() - self._last_frame) * 4.0 + 0.9)
-                entry_alpha = int(alpha * grow)
-                by = y + int(c.px(10) * (1.0 - ease_out_cubic(grow)))
-            c.rounded(bx, by, bubble_w, bubble_h, c.px(16), bubble, entry_alpha)
+            if b["hist"] == newest and grow < 1.0:
+                entry_alpha = int(alpha * (0.35 + 0.65 * grow))
+                by = y + int(c.px(14) * (1.0 - ease_out_cubic(grow)))
+            c.text(label, lx, by, label_size, c.color("faint"), entry_alpha)
+            by += label_h
+            c.rounded(bx, by, bubble_w, b["bubble_h"], c.px(16), bubble, entry_alpha)
             if not mine:
                 # avatar tron nho cua tro ly: vong accent + song trang
                 acx = bx - c.px(20)
@@ -646,7 +672,7 @@ class Screen:
             for line in lines:
                 c.text(line, bx + c.px(12), ty, chat_size, text_color, entry_alpha)
                 ty += line_h
-            y = by + bubble_h + c.px(10)
+            y = by + b["bubble_h"] + c.px(10)
 
     def _draw_empty(self, c, box, x0, y0, w, h):
         cx = x0 + w // 2
@@ -903,6 +929,18 @@ class Screen:
             self.scroll = max(self.scroll - 1, 0)
             self._dirty = True
 
+    def _dpad_action(self, action):
+        """Chong double-input: nut D-pad co the toi qua 2 duong
+        (controller button + hat) -> bo qua lan lap trong 0.25s."""
+        if not action:
+            return
+        now = time.monotonic()
+        if action == self._last_dpad_action and now - self._last_dpad_at < 0.25:
+            return
+        self._last_dpad_action = action
+        self._last_dpad_at = now
+        self.action(action)
+
     def events(self):
         event = sdl2.SDL_Event()
         while sdl2.SDL_PollEvent(ctypes.byref(event)):
@@ -916,13 +954,17 @@ class Screen:
             elif event.type == sdl2.SDL_CONTROLLERBUTTONDOWN:
                 buttons = {0: "back", 1: "a", 4: "back", 6: "settings",
                            11: "up", 12: "down", 13: "left", 14: "right"}
-                self.action(buttons.get(event.cbutton.button, ""))
+                btn = event.cbutton.button
+                if btn in (11, 12, 13, 14):
+                    self._dpad_action(buttons.get(btn, ""))
+                else:
+                    self.action(buttons.get(btn, ""))
             elif event.type == sdl2.SDL_JOYBUTTONDOWN and not self.controllers:
                 buttons = {0: "back", 1: "a", 4: "settings", 8: "settings"}
                 self.action(buttons.get(event.jbutton.button, ""))
-            elif event.type == sdl2.SDL_JOYHATMOTION and not self.controllers:
+            elif event.type == sdl2.SDL_JOYHATMOTION:
                 hats = {1: "up", 4: "down", 8: "left", 2: "right"}
-                self.action(hats.get(event.jhat.value, ""))
+                self._dpad_action(hats.get(event.jhat.value, ""))
 
     def poll_ota(self):
         """Doc .ota-status (ota-update.sh chay nen tu launch.sh).

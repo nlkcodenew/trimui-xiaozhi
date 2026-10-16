@@ -1,5 +1,12 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.2.2 - 2026-10-16
+
+- **Sửa chat không bám theo tin mới.** Khung chat trước neo đỉnh nên tin mới bị vẽ tràn xuống dưới vùng hiển thị, màn hình "đứng im"; nay neo đáy + tự bỏ tin cũ nhất khi vượt khung — tin mới nhất luôn hiện.
+- **D-pad cuộn được thật:** nhận cả 2 đường event (controller button + hat) kèm chống double-input 0.25s (trên máy `controllers=1` nên đường hat cũ bị bỏ qua).
+- Vẽ nhãn BẠN/XIAOZHI trên mỗi bong bóng (trước tính mà không vẽ); sửa animation tin mới rơi sai bong bóng (off-by-one) và neo theo lúc tin đến.
+
+
 ## v0.2.1 - 2026-10-02
 
 - **Sửa logo khởi động lệch sang phải trên Brick Pro (4:3).** Intro vẫn canh theo hằng số 1280×720 nên trên màn hình 1024×768 logo bị đẩy sang phải; Smart Pro S (1280×720) thì vô tình đúng nên dễ tưởng chỉ lỗi ở một máy. Nay intro canh theo **pixel thật** (`self.width/self.height`) — đúng cách app Terminal (native) đang làm.
