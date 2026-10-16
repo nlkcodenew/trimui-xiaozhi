@@ -1,5 +1,10 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.2.3
+
+- Icon mới: glossy 3D, nền trong suốt.
+
+
 ## v0.2.2 - 2026-10-16
 
 - **Sửa chat không bám theo tin mới.** Khung chat trước neo đỉnh nên tin mới bị vẽ tràn xuống dưới vùng hiển thị, màn hình "đứng im"; nay neo đáy + tự bỏ tin cũ nhất khi vượt khung — tin mới nhất luôn hiện.
