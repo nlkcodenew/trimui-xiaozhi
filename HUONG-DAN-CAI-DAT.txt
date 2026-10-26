@@ -1,0 +1,69 @@
+HƯỚNG DẪN CÀI ĐẶT TRIMUI-XIAOZHI
+(Chạy được cả stock OS và Knulli OS — Brick Pro, Smart Pro S, cùng một bản build)
+
+File ZIP duy nhất trong release chứa đủ mọi thứ cho cả hai hệ điều hành
+(thư mục Apps/ cho stock OS, thư mục system/ + roms/ cho Knulli OS, và
+file hướng dẫn này). Tùy máy đang chạy hệ điều hành nào mà làm theo
+phần A hoặc phần B dưới đây.
+
+================================================================
+PHẦN A — STOCK OS (hệ điều hành gốc của máy)
+================================================================
+1. Tải file ZIP của bản release về máy tính, giải nén ra sẽ được các
+   thư mục Apps/, system/, roms/ và file HUONG-DAN-CAI-DAT.txt. Chỉ cần
+   thư mục Apps/Trimui-XiaoZhi/: chép thẳng ra gốc thẻ nhớ (bỏ qua
+   system/, roms/ và file hướng dẫn — chúng dành cho Knulli OS).
+
+2. Cắm thẻ vào máy, mở Trimui-XiaoZhi từ mục Apps trên máy.
+
+3. Lần đầu dùng: vào app để cấu hình (kết nối tài khoản/thiết bị).
+   Dữ liệu của bạn nằm trong thư mục data/ nên cập nhật bản mới
+   không mất cấu hình.
+
+Lưu ý (stock OS):
+- Cập nhật: giải nén/copy đè lên bản cũ, hoặc dùng OTA trong app.
+- Cập nhật không xóa thư mục data/ và logs/ của bạn.
+
+================================================================
+PHẦN B — KNULLI OS
+================================================================
+Trên Knulli, app nằm ở mục Tools (không phải Ports). File ZIP đã
+chứa sẵn mọi thứ cho Knulli, không cần tải thêm file nào khác.
+
+1. Giải nén file ZIP ra máy tính, sẽ được các thư mục system/,
+   roms/ và file HUONG-DAN-CAI-DAT.txt (cùng thư mục Apps/ dành
+   cho stock OS — bỏ qua).
+
+2. Chép thư mục system/trimui-xiaozhi/ vào /userdata/system/ trên
+   máy game (gộp/ghi đè — chỉ chép đè, không cần xóa thư mục cũ).
+   Cách chép: qua SFTP/SSH, hoặc tháo thẻ gắn vào máy tính rồi chép
+   vào phân vùng dữ liệu (thư mục system/ nằm ở gốc phân vùng đó).
+
+3. Chép file roms/tools/Trimui-XiaoZhi.sh vào /userdata/roms/tools/
+   trên máy game, rồi cấp quyền chạy (qua SSH):
+     chmod +x /userdata/roms/tools/Trimui-XiaoZhi.sh
+
+4. (Tùy chọn, để hiện icon đẹp) Chép file
+   roms/tools/images/trimui-xiaozhi.png vào
+   /userdata/roms/tools/images/.
+
+5. Khởi động lại máy, mở EmulationStation, vào mục Tools rồi chọn
+   Trimui-XiaoZhi.
+
+Lưu ý (Knulli OS):
+- Launcher tự tạo liên kết /mnt/SDCARD trỏ sang /userdata nếu máy chưa
+  có.
+- Cập nhật: dùng OTA trong app. Cập nhật OTA chỉ cập nhật payload trong
+  /userdata/system/trimui-xiaozhi/, không tự chuyển file launcher.
+- Cập nhật không xóa thư mục data/ và logs/ của bạn.
+
+ĐÃ CÀI BẢN CŨ Ở PORTS, MUỐN CHUYỂN SANG TOOLS:
+- Chép file Trimui-XiaoZhi.sh từ /userdata/roms/ports/ sang
+  /userdata/roms/tools/ (xóa file cũ ở Ports sau khi chép).
+- Chép icon trimui-xiaozhi.png từ /userdata/roms/ports/images/ sang
+  /userdata/roms/tools/images/.
+- Chuyển mục gamelist: dừng EmulationStation trước
+  (/etc/init.d/S31emulationstation stop), cắt khối <game> của
+  Trimui-XiaoZhi từ /userdata/roms/ports/gamelist.xml sang
+  /userdata/roms/tools/gamelist.xml (tạo file mới nếu chưa có), rồi
+  khởi động lại máy.

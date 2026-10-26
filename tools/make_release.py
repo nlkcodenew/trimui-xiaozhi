@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tao manifest + ZIP cai dat cho Trimui Xiaozhi.
-ZIP co cau truc Apps/TrimuiXiaozhi/ de giai nen thang vao goc the nho.
+"""Tao manifest + ZIP duy nhat cho Trimui Xiaozhi.
+Apps/Trimui-XiaoZhi (stock) + system/trimui-xiaozhi + roms/tools (Knulli) + huong dan.
 """
 import hashlib
 import json
@@ -89,6 +89,10 @@ def main():
         for fp, rel in collect():
             exe = rel.endswith(".sh") or rel.startswith("bin/") or rel == "launch.sh"
             archive_add(archive, fp, "%s/%s" % (APP_DIR_IN_ZIP, rel), exe)
+            archive_add(archive, fp, "system/trimui-xiaozhi/%s" % rel, exe)
+        archive_add(archive, os.path.join(ROOT, "knulli", "Trimui-XiaoZhi.sh"), "roms/tools/Trimui-XiaoZhi.sh", True)
+        archive_add(archive, os.path.join(ROOT, "icon.png"), "roms/tools/images/trimui-xiaozhi.png")
+        archive_add(archive, os.path.join(ROOT, "HUONG-DAN-CAI-DAT.txt"), "HUONG-DAN-CAI-DAT.txt")
     with open(archive_path, "rb") as h:
         checksum = sha256(h.read())
     with open(archive_path + ".sha256", "w", encoding="ascii", newline="\n") as h:

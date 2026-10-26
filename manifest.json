@@ -1,12 +1,17 @@
 {
-  "version": "0.2.3",
+  "version": "0.2.4",
   "app": "trimui-xiaozhi",
-  "built": "2026-10-17T00:45:13+07:00",
+  "built": "2026-10-26T11:16:52+07:00",
   "files": [
     {
       "path": "CHANGELOG.md",
-      "sha256": "0aee9c64898894332f781a02bdbd3185c94534348168119595a9efe950241d12",
-      "size": 7363
+      "sha256": "d276b96ffff80d77cebafefddc55f82dfed2363acd4bf6f960ddc930bc7e2322",
+      "size": 7617
+    },
+    {
+      "path": "HUONG-DAN-CAI-DAT.txt",
+      "sha256": "4b836a182707c2c778c7a274f60ab3df2001fa3e83d3cce7f47c40418c5ba376",
+      "size": 3569
     },
     {
       "path": "README.md",
@@ -15,7 +20,7 @@
     },
     {
       "path": "VERSION",
-      "sha256": "3ab94c04d24986f3af288ba1cda2c0bbddbc5a89dff097182805f54578e1ea75",
+      "sha256": "1725bfa6524c5265e7c171cf06568417d39b947fff49c242f03859479c82334b",
       "size": 6
     },
     {
@@ -57,6 +62,11 @@
       "path": "icon.png",
       "sha256": "a0e27fb6adafabe6a3d9f4c19bbf404c5d656e41fe1aa5cc452fbd07b50d7a8c",
       "size": 49161
+    },
+    {
+      "path": "knulli/Trimui-XiaoZhi.sh",
+      "sha256": "87ae7abd9469a48de4ec764a72ac4473e14780377eee73b481ea23b864086874",
+      "size": 550
     },
     {
       "path": "launch.sh",
@@ -505,9 +515,9 @@
     }
   ],
   "release_asset": {
-    "name": "trimui-xiaozhi-v0.2.3.zip",
-    "sha256": "a40bcedc66073356096022c13446ea196ebb826ce7d13d6d00105422ab8e2538",
-    "size": 2747362
+    "name": "trimui-xiaozhi-v0.2.4.zip",
+    "sha256": "aed497bf5b873bbe791a9b398c94d0b6207600866c89eff404d6126d3cb0c888",
+    "size": 5551058
   },
-  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.2.2 - 2026-10-16\n\n- **Sửa chat không bám theo tin mới.** Khung chat trước neo đỉnh nên tin mới bị vẽ tràn xuống dưới vùng hiển thị, màn hình \"đứng im\"; nay neo đáy + tự bỏ tin cũ nhất khi vượt khung — tin mới nhất luôn hiện.\n- **D-pad cuộn được thật:** nhận cả 2 đường event (controller button + hat) kèm chống double-input 0.25s (trên máy `controllers=1` nên đường hat cũ bị bỏ qua).\n- Vẽ nhãn BẠN/XIAOZHI trên mỗi bong bóng (trước tính mà không vẽ); sửa animation tin mới rơi sai bong bóng (off-by-one) và neo theo lúc tin đến.\n\n\n## v0.2.1 - 2026-10-02\n\n- **Sửa logo khởi động lệch sang phải trên Brick Pro (4:3).** Intro vẫn canh theo hằng số 1280×720 nên trên màn hình 1024×768 logo bị đẩy sang phải; Smart Pro S (1280×720) thì vô tình đúng nên dễ tưởng chỉ lỗi ở một máy. Nay intro canh theo **pixel thật** (`self.width/self.height`) — đúng cách app Terminal (native) đang làm.\n- Không cần tách bản riêng cho từng máy: một bản duy nhất tự căh đúng trên cả 1024×768 và 1280×720.\n- Test mới: kiểm tra logo chính giữa cả ngang lẫn dọc, và không tràn màn hình, trên 1024×768 / 1280×720 / 1024×600 / 800×480.\n\n## v0.2.0 - 2026-10-02\n\n- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.\n\n### Sửa lỗi bố cục\n\n- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).\n- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.\n\n### Giao diện mới\n\n- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.\n- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.\n- **Footer**: gợi ý phím dạng pill, đổi theo trang.\n- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.\n- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.\n- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.\n- **Thông báo OTA** trượt từ trên xuống.\n\n### Hiệu năng\n\n- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.\n- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.\n\n### Kiểm thử\n\n- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi mục cài đặt thuộc nhóm và vẽ được, hộp thoại/toast/2 trang kích hoạt vẽ được.\n- `tools/preview_ui.py` — render giao diện ra PNG bằng PIL để xem trước khi nạp lên máy (`python3 tools/preview_ui.py`).\n\n## v0.1.4 - 2026-10-02\n\n- **Sửa l"
+  "note": "# Changelog - Trimui-XiaoZhi\n\n## v0.2.4\n\n- Gói zip duy nhất: stock OS (Apps/Trimui-XiaoZhi/) + Knulli OS (system/trimui-xiaozhi/ + roms/tools/) + hướng dẫn trong zip; app về Tools trên Knulli; không đổi code.\n\n\n## v0.2.3\n\n- Icon mới: glossy 3D, nền trong suốt.\n\n\n## v0.2.2 - 2026-10-16\n\n- **Sửa chat không bám theo tin mới.** Khung chat trước neo đỉnh nên tin mới bị vẽ tràn xuống dưới vùng hiển thị, màn hình \"đứng im\"; nay neo đáy + tự bỏ tin cũ nhất khi vượt khung — tin mới nhất luôn hiện.\n- **D-pad cuộn được thật:** nhận cả 2 đường event (controller button + hat) kèm chống double-input 0.25s (trên máy `controllers=1` nên đường hat cũ bị bỏ qua).\n- Vẽ nhãn BẠN/XIAOZHI trên mỗi bong bóng (trước tính mà không vẽ); sửa animation tin mới rơi sai bong bóng (off-by-one) và neo theo lúc tin đến.\n\n\n## v0.2.1 - 2026-10-02\n\n- **Sửa logo khởi động lệch sang phải trên Brick Pro (4:3).** Intro vẫn canh theo hằng số 1280×720 nên trên màn hình 1024×768 logo bị đẩy sang phải; Smart Pro S (1280×720) thì vô tình đúng nên dễ tưởng chỉ lỗi ở một máy. Nay intro canh theo **pixel thật** (`self.width/self.height`) — đúng cách app Terminal (native) đang làm.\n- Không cần tách bản riêng cho từng máy: một bản duy nhất tự căh đúng trên cả 1024×768 và 1280×720.\n- Test mới: kiểm tra logo chính giữa cả ngang lẫn dọc, và không tràn màn hình, trên 1024×768 / 1280×720 / 1024×600 / 800×480.\n\n## v0.2.0 - 2026-10-02\n\n- **Viết lại toàn bộ giao diện và menu** (module mới `ui.py`), cả chế độ **Tối** lẫn **Sáng**.\n\n### Sửa lỗi bố cục\n\n- Bỏ `SDL_RenderSetLogicalSize`: trên màn hình 1024×768 nó ép nội dung 1280×720 vào giữa, tạo **hai dải đen lớn** và làm mọi thứ lệch. Nay mọi thứ vẽ bằng **pixel thật**, tự co theo kích thước màn hình (đã kiểm ở 1024×768, 1280×720, 1024×600, 800×480).\n- Chữ trước đây nằm trên nền phẳng và lệch lền; nay có header, thẻ bo tròn, footer dạng pill rõ ràng.\n\n### Giao diện mới\n\n- **Chat dạng bong bóng**: tin của bạn căn phải, tin trợ lý căn trái kèm avatar sóng nhỏ; tin mới nhất trượt lên + mờ dần.\n- **Header**: tên app + chip phiên bản + pill trạng thái có chấm sáng/đồng sóng chuyển động khi đang nói.\n- **Footer**: gợi ý phím dạng pill, đổi theo trang.\n- **Cài đặt**: nhóm theo mục (Giao diện / Âm thanh / Điều khiển từ xa / Bảo trì), hàng được chọn có thanh accent, giá trị trong pill, mũi tên ← →.\n- **Trang kích hoạt**: mã 6 số đóng khung ô vuông dễ đọc.\n- **Hộp thoại xác nhận** gỡ liên kết: có nền làm mờ, hai nút bám đúng bề rộng chữ.\n- **Thông báo OTA** trượt từ trên xuống.\n\n### Hiệu năng\n\n- `text()` trước gọi `TTF_RenderUTF8_Blended` **mỗi khung vẽ** — giờ mỗi chuỗi chỉ render **một lần** rồi dùng texture có cache (giới hạn 320 mục, tự xoá cache khi đổi theme). Nhờ vậy mới chạy được hiệu ứng chuyển động.\n- Vòng lặp chỉ vẽ lại khi có thay đổi hoặc đang có animation; khi màn hình đứng yên không vẽ lại liên tục.\n\n### Kiểm thử\n\n- `tests/test_ui.py` — 12 test: cả hai theme vẽ được, **không có hình nào tràn ra ngoài màn hình**, chuỗi không render lại mỗi khung, mọi "
 }

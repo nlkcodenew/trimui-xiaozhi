@@ -1,5 +1,10 @@
 # Changelog - Trimui-XiaoZhi
 
+## v0.2.4
+
+- Gói zip duy nhất: stock OS (Apps/Trimui-XiaoZhi/) + Knulli OS (system/trimui-xiaozhi/ + roms/tools/) + hướng dẫn trong zip; app về Tools trên Knulli; không đổi code.
+
+
 ## v0.2.3
 
 - Icon mới: glossy 3D, nền trong suốt.
